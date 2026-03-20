@@ -3,77 +3,1035 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Workout Tracker</title>
+  <title>WorkoutTracker</title>
+  <meta name="theme-color" content="#0f8f5b" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    :root{
+      --bg-1:#f4fff8;
+      --bg-2:#e8fff1;
+      --card:#ffffff;
+      --card-2:#f7fffa;
+      --text:#103127;
+      --muted:#5d766d;
+      --line:#d8efe1;
+      --green:#0f8f5b;
+      --green-2:#14a56b;
+      --green-3:#d9f7e8;
+      --shadow:0 14px 40px rgba(15, 143, 91, 0.14);
+      --radius:22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
       margin: 0;
-      background: #111;
-      color: white;
+      padding: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #ffffff 0%, #effff6 38%, #e8fff1 100%);
+      min-height: 100%;
+    }
+
+    body {
+      padding: 14px;
+    }
+
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
       display: grid;
-      place-items: center;
-      min-height: 100vh;
+      gap: 14px;
+      padding-bottom: 40px;
     }
-    .card {
-      width: min(90vw, 500px);
-      background: #1d1d1d;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    h1 { margin-top: 0; }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-    }
-    button {
-      background: #3b82f6;
+
+    .hero {
+      background: linear-gradient(145deg, var(--green), var(--green-2));
       color: white;
+      border-radius: 28px;
+      padding: 18px;
+      box-shadow: 0 16px 44px rgba(15, 143, 91, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.14);
+      filter: blur(2px);
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .82;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255,255,255,0.90);
+      font-size: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .hero-pill {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 12px;
+      backdrop-filter: blur(6px);
+    }
+
+    .hero-pill .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .10em;
+      opacity: .75;
+      margin-bottom: 4px;
+    }
+
+    .hero-pill .value {
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .split-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .split-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: var(--card-2);
+      border: 1px solid var(--line);
+    }
+
+    .split-item.active {
+      background: var(--green-3);
+      border-color: #bde9d0;
+      box-shadow: inset 0 0 0 1px rgba(15,143,91,0.06);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .control {
+      display: grid;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    input, select, textarea, button {
+      font: inherit;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      border-radius: 16px;
+      padding: 12px 14px;
+      outline: none;
+      transition: .18s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(15, 143, 91, 0.10);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 92px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .summary-box {
+      background: var(--card-2);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .summary-box .k {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .10em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-box .v {
+      font-weight: 800;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .progress-wrap {
+      margin-top: 12px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: #e8f5ee;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), #39c887);
+      transition: width .22s ease;
+    }
+
+    .exercise-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .exercise-card {
+      background: linear-gradient(180deg, #ffffff 0%, #fbfffd 100%);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 14px;
+    }
+
+    .exercise-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .exercise-name {
+      font-weight: 800;
+      font-size: 17px;
+      line-height: 1.15;
+    }
+
+    .exercise-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .chip {
+      background: var(--green-3);
+      color: var(--green);
+      border: 1px solid #bfe8d1;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tiny-btn {
+      border: none;
+      background: var(--green-3);
+      color: var(--green);
+      border: 1px solid #bfe8d1;
+      padding: 9px 12px;
+      border-radius: 14px;
+      font-weight: 700;
       cursor: pointer;
     }
-    ul { padding-left: 20px; }
+
+    .tiny-btn.active {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    .set-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .set-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .set-row.unilateral {
+      grid-template-columns: 56px 1fr 1fr 1fr 1fr;
+    }
+
+    .set-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      text-align: center;
+      padding: 10px 8px;
+      background: var(--card-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .exercise-note {
+      margin-top: 10px;
+    }
+
+    .exercise-note textarea {
+      min-height: 70px;
+      background: #fcfffd;
+    }
+
+    .note-block {
+      margin-top: 12px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(145deg, var(--green), var(--green-2));
+      color: white;
+      box-shadow: 0 10px 24px rgba(15,143,91,0.22);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .recent-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .recent-item {
+      border: 1px solid var(--line);
+      background: var(--card-2);
+      border-radius: 18px;
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding-top: 4px;
+    }
+
+    @media (max-width: 640px) {
+      .controls, .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .set-row.unilateral {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .set-row.unilateral .set-label {
+        grid-column: 1 / -1;
+      }
+
+      .set-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .set-row .set-label {
+        grid-column: 1 / -1;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Workout Tracker</h1>
-    <p>Add a workout note:</p>
-    <input id="noteInput" placeholder="ex: Push A - Smith incline 155 x 8, 7, 6" />
-    <button onclick="addNote()">Save</button>
-    <ul id="notes"></ul>
+  <div class="app">
+    <section class="hero">
+      <div class="eyebrow" id="todayLine">Today</div>
+      <h1 id="todayWorkoutTitle">WorkoutTracker</h1>
+      <p id="todayWorkoutSub">Built for your split.</p>
+
+      <div class="hero-grid">
+        <div class="hero-pill">
+          <div class="label">Start with</div>
+          <div class="value" id="startWith">—</div>
+        </div>
+        <div class="hero-pill">
+          <div class="label">Finish with</div>
+          <div class="value" id="finishWith">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Your Weekly Split</h2>
+      <div class="muted">Today gets highlighted automatically.</div>
+      <div class="split-list" id="splitList"></div>
+    </section>
+
+    <section class="card">
+      <h2>Workout Logger</h2>
+      <div class="muted">Mobile-friendly, remembers your logs on this device/browser.</div>
+
+      <div class="controls">
+        <div class="control">
+          <label for="logDate">Log Date</label>
+          <input type="date" id="logDate" />
+        </div>
+        <div class="control">
+          <label for="workoutSelect">Workout</label>
+          <select id="workoutSelect"></select>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="summary-box">
+          <div class="k">Workout</div>
+          <div class="v" id="summaryWorkout">—</div>
+        </div>
+        <div class="summary-box">
+          <div class="k">Exercises</div>
+          <div class="v" id="summaryExercises">0</div>
+        </div>
+        <div class="summary-box">
+          <div class="k">Completed Sets</div>
+          <div class="v" id="summarySets">0 / 0</div>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="muted" id="progressText" style="margin-bottom:6px;">Progress</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="exercise-list" id="exerciseList"></div>
+
+      <div class="note-block">
+        <label for="workoutNote">Workout Notes</label>
+        <textarea id="workoutNote" placeholder="How’d it feel? Anything to remember for next time?"></textarea>
+      </div>
+
+      <div class="button-row">
+        <button class="btn btn-primary" id="saveBtn">Save workout</button>
+        <button class="btn btn-secondary" id="clearBtn">Clear this log</button>
+      </div>
+
+      <div class="muted" id="saveStatus" style="margin-top:10px;">Not saved yet.</div>
+    </section>
+
+    <section class="card">
+      <h2>Recent Saved Sessions</h2>
+      <div class="muted">Your latest saved logs from this device.</div>
+      <div class="recent-list" id="recentList"></div>
+    </section>
+
+    <div class="footer-note">
+      Warm-up sets don’t count. Logs are saved locally on your phone/browser.
+    </div>
   </div>
 
   <script>
-    const notesEl = document.getElementById("notes");
-    const inputEl = document.getElementById("noteInput");
+    const split = {
+      Monday: {
+        name: "Push A",
+        exercises: [
+          { name: "Smith incline press", sets: 3, repRange: "6–10" },
+          { name: "Cable fly", sets: 1, repRange: "10–15" },
+          { name: "Cable lateral raise", sets: 2, repRange: "12–20" },
+          { name: "Skullcrushers", sets: 2, repRange: "8–12" }
+        ]
+      },
+      Tuesday: {
+        name: "Pull A",
+        exercises: [
+          { name: "Wide-grip pullup", sets: 2, repRange: "5–8" },
+          { name: "Neutral-grip weighted pullup", sets: 2, repRange: "5–8" },
+          { name: "1-arm kneeling cable lat pulldown", sets: 2, repRange: "8–12", unilateral: true },
+          { name: "Incline DB curl", sets: 2, repRange: "8–12" }
+        ]
+      },
+      Wednesday: {
+        name: "Legs",
+        exercises: [
+          { name: "Smith squat", sets: 3, repRange: "6–10" },
+          { name: "Machine leg extension", sets: 2, repRange: "10–15" },
+          { name: "Hamstring curl", sets: 2, repRange: "10–15" },
+          { name: "Calf raise", sets: 1, repRange: "10–20" }
+        ]
+      },
+      Thursday: {
+        name: "Rest",
+        exercises: []
+      },
+      Friday: {
+        name: "Push B",
+        exercises: [
+          { name: "Flat smith press", sets: 3, repRange: "6–10" },
+          { name: "Cable fly", sets: 1, repRange: "10–15" },
+          { name: "Cable lateral raise", sets: 2, repRange: "12–20" },
+          { name: "Skullcrushers", sets: 2, repRange: "10–15" }
+        ]
+      },
+      Saturday: {
+        name: "Pull B",
+        exercises: [
+          { name: "Lat pulldown", sets: 2, repRange: "8–12" },
+          { name: "Seated cable row", sets: 3, repRange: "8–12" },
+          { name: "Preacher curl", sets: 2, repRange: "10–15" },
+          { name: "Rear delt fly", sets: 1, repRange: "12–20" }
+        ]
+      },
+      Sunday: {
+        name: "Rest",
+        exercises: []
+      }
+    };
 
-    function loadNotes() {
-      const notes = JSON.parse(localStorage.getItem("notes") || "[]");
-      notesEl.innerHTML = "";
-      notes.forEach(note => {
-        const li = document.createElement("li");
-        li.textContent = note;
-        notesEl.appendChild(li);
+    const allWorkoutTemplates = [
+      split.Monday,
+      split.Tuesday,
+      split.Wednesday,
+      split.Friday,
+      split.Saturday
+    ];
+
+    const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const STORAGE_KEY = "workoutTrackerV3";
+
+    const today = new Date();
+    const todayDayName = dayNames[today.getDay()];
+    const todayPlan = split[todayDayName];
+
+    const splitList = document.getElementById("splitList");
+    const todayLine = document.getElementById("todayLine");
+    const todayWorkoutTitle = document.getElementById("todayWorkoutTitle");
+    const todayWorkoutSub = document.getElementById("todayWorkoutSub");
+    const startWith = document.getElementById("startWith");
+    const finishWith = document.getElementById("finishWith");
+    const logDate = document.getElementById("logDate");
+    const workoutSelect = document.getElementById("workoutSelect");
+    const exerciseList = document.getElementById("exerciseList");
+    const workoutNote = document.getElementById("workoutNote");
+    const saveBtn = document.getElementById("saveBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const saveStatus = document.getElementById("saveStatus");
+    const recentList = document.getElementById("recentList");
+    const summaryWorkout = document.getElementById("summaryWorkout");
+    const summaryExercises = document.getElementById("summaryExercises");
+    const summarySets = document.getElementById("summarySets");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+
+    function formatDateISO(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function prettyDate(date) {
+      return date.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "short",
+        day: "numeric"
       });
     }
 
-    function addNote() {
-      const value = inputEl.value.trim();
-      if (!value) return;
-      const notes = JSON.parse(localStorage.getItem("notes") || "[]");
-      notes.push(value);
-      localStorage.setItem("notes", JSON.stringify(notes));
-      inputEl.value = "";
-      loadNotes();
+    function getStorage() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
     }
 
-    loadNotes();
+    function setStorage(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function buildEmptyExerciseState(exercise) {
+      const sets = [];
+      for (let i = 0; i < exercise.sets; i++) {
+        if (exercise.unilateral) {
+          sets.push({ leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" });
+        } else {
+          sets.push({ weight: "", reps: "" });
+        }
+      }
+      return {
+        unilateral: !!exercise.unilateral,
+        note: "",
+        sets
+      };
+    }
+
+    function buildEmptyLog(workoutTemplate) {
+      return {
+        workoutName: workoutTemplate.name,
+        workoutNote: "",
+        updatedAt: "",
+        exercises: workoutTemplate.exercises.map(buildEmptyExerciseState)
+      };
+    }
+
+    function getLogKey(date, workoutName) {
+      return `${date}|${workoutName}`;
+    }
+
+    function getCurrentWorkoutTemplate() {
+      return allWorkoutTemplates.find(w => w.name === workoutSelect.value) || allWorkoutTemplates[0];
+    }
+
+    function getOrCreateCurrentLog() {
+      const date = logDate.value;
+      const workout = getCurrentWorkoutTemplate();
+      const data = getStorage();
+      const key = getLogKey(date, workout.name);
+
+      if (!data[key]) {
+        data[key] = buildEmptyLog(workout);
+        setStorage(data);
+      }
+
+      return data[key];
+    }
+
+    function saveCurrentLog() {
+      const data = getStorage();
+      const date = logDate.value;
+      const workout = getCurrentWorkoutTemplate();
+      const key = getLogKey(date, workout.name);
+
+      const current = collectCurrentFormState();
+      current.updatedAt = new Date().toISOString();
+      data[key] = current;
+      setStorage(data);
+
+      const savedTime = new Date(current.updatedAt).toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+      });
+      saveStatus.textContent = `Saved • ${savedTime}`;
+      renderRecentSessions();
+      updateSummary();
+    }
+
+    function clearCurrentLog() {
+      const workout = getCurrentWorkoutTemplate();
+      const data = getStorage();
+      const key = getLogKey(logDate.value, workout.name);
+      delete data[key];
+      setStorage(data);
+      renderWorkoutForm();
+      saveStatus.textContent = "Cleared this log.";
+      renderRecentSessions();
+    }
+
+    function collectCurrentFormState() {
+      const workout = getCurrentWorkoutTemplate();
+      const log = {
+        workoutName: workout.name,
+        workoutNote: workoutNote.value,
+        updatedAt: "",
+        exercises: []
+      };
+
+      workout.exercises.forEach((exercise, i) => {
+        const card = document.querySelector(`[data-exercise-card="${i}"]`);
+        const unilateral = card.dataset.unilateral === "true";
+        const note = card.querySelector(`[data-note="${i}"]`).value;
+
+        const sets = [];
+        for (let s = 0; s < exercise.sets; s++) {
+          if (unilateral) {
+            sets.push({
+              leftWeight: card.querySelector(`[data-left-weight="${i}-${s}"]`).value,
+              leftReps: card.querySelector(`[data-left-reps="${i}-${s}"]`).value,
+              rightWeight: card.querySelector(`[data-right-weight="${i}-${s}"]`).value,
+              rightReps: card.querySelector(`[data-right-reps="${i}-${s}"]`).value
+            });
+          } else {
+            sets.push({
+              weight: card.querySelector(`[data-weight="${i}-${s}"]`).value,
+              reps: card.querySelector(`[data-reps="${i}-${s}"]`).value
+            });
+          }
+        }
+
+        log.exercises.push({ unilateral, note, sets });
+      });
+
+      return log;
+    }
+
+    function renderHero() {
+      todayLine.textContent = prettyDate(today);
+      todayWorkoutTitle.textContent = todayPlan.name === "Rest" ? "Rest Day" : todayPlan.name;
+      if (todayPlan.name === "Rest") {
+        todayWorkoutSub.textContent = "Recover. Eat. Sleep. Come back stronger.";
+        startWith.textContent = "Recovery";
+        finishWith.textContent = "Recovery";
+      } else {
+        todayWorkoutSub.textContent = "Today’s plan is locked in.";
+        startWith.textContent = todayPlan.exercises[0].name;
+        finishWith.textContent = todayPlan.exercises[todayPlan.exercises.length - 1].name;
+      }
+    }
+
+    function renderSplit() {
+      splitList.innerHTML = "";
+      dayNames.slice(1).concat("Sunday").forEach(day => {
+        const item = document.createElement("div");
+        item.className = "split-item" + (day === todayDayName ? " active" : "");
+        item.innerHTML = `
+          <div>
+            <div style="font-weight:800;">${day}</div>
+            <div class="muted">${split[day].name}</div>
+          </div>
+          <div class="tag">${split[day].name}</div>
+        `;
+        splitList.appendChild(item);
+      });
+    }
+
+    function populateWorkoutSelect() {
+      workoutSelect.innerHTML = allWorkoutTemplates
+        .map(w => `<option value="${w.name}">${w.name}</option>`)
+        .join("");
+
+      if (todayPlan.name !== "Rest") {
+        workoutSelect.value = todayPlan.name;
+      } else {
+        workoutSelect.value = "Push A";
+      }
+    }
+
+    function renderWorkoutForm() {
+      const workout = getCurrentWorkoutTemplate();
+      const log = getOrCreateCurrentLog();
+
+      summaryWorkout.textContent = workout.name;
+      summaryExercises.textContent = workout.exercises.length;
+
+      workoutNote.value = log.workoutNote || "";
+      exerciseList.innerHTML = "";
+
+      workout.exercises.forEach((exercise, i) => {
+        const state = log.exercises[i] || buildEmptyExerciseState(exercise);
+        const card = document.createElement("div");
+        card.className = "exercise-card";
+        card.dataset.exerciseCard = i;
+        card.dataset.unilateral = String(state.unilateral);
+
+        let setRows = "";
+        for (let s = 0; s < exercise.sets; s++) {
+          if (state.unilateral) {
+            const row = state.sets[s] || { leftWeight:"", leftReps:"", rightWeight:"", rightReps:"" };
+            setRows += `
+              <div class="set-row unilateral">
+                <div class="set-label">Set ${s + 1}</div>
+                <input data-left-weight="${i}-${s}" placeholder="L weight" value="${escapeHtml(row.leftWeight || "")}" />
+                <input data-left-reps="${i}-${s}" placeholder="L reps" value="${escapeHtml(row.leftReps || "")}" />
+                <input data-right-weight="${i}-${s}" placeholder="R weight" value="${escapeHtml(row.rightWeight || "")}" />
+                <input data-right-reps="${i}-${s}" placeholder="R reps" value="${escapeHtml(row.rightReps || "")}" />
+              </div>
+            `;
+          } else {
+            const row = state.sets[s] || { weight:"", reps:"" };
+            setRows += `
+              <div class="set-row">
+                <div class="set-label">Set ${s + 1}</div>
+                <input data-weight="${i}-${s}" placeholder="Weight" value="${escapeHtml(row.weight || "")}" />
+                <input data-reps="${i}-${s}" placeholder="Reps" value="${escapeHtml(row.reps || "")}" />
+              </div>
+            `;
+          }
+        }
+
+        card.innerHTML = `
+          <div class="exercise-top">
+            <div>
+              <div class="exercise-name">${exercise.name}</div>
+              <div class="exercise-meta">
+                <span class="chip">${exercise.sets} set${exercise.sets > 1 ? "s" : ""}</span>
+                <span class="chip">${exercise.repRange} reps</span>
+              </div>
+            </div>
+            <button class="tiny-btn ${state.unilateral ? "active" : ""}" data-toggle-unilateral="${i}">
+              ${state.unilateral ? "Unilateral On" : "Unilateral Off"}
+            </button>
+          </div>
+
+          <div class="set-grid">${setRows}</div>
+
+          <div class="exercise-note">
+            <label>Exercise Note</label>
+            <textarea data-note="${i}" placeholder="Notes for ${exercise.name}...">${escapeHtml(state.note || "")}</textarea>
+          </div>
+        `;
+
+        exerciseList.appendChild(card);
+      });
+
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const workout = getCurrentWorkoutTemplate();
+      const log = collectCurrentFormState();
+
+      let totalSets = 0;
+      let completedSets = 0;
+
+      log.exercises.forEach((exerciseState, i) => {
+        totalSets += workout.exercises[i].sets;
+        exerciseState.sets.forEach(set => {
+          if (exerciseState.unilateral) {
+            if ((set.leftReps || "").trim() !== "" && (set.rightReps || "").trim() !== "") {
+              completedSets++;
+            }
+          } else {
+            if ((set.reps || "").trim() !== "") {
+              completedSets++;
+            }
+          }
+        });
+      });
+
+      summarySets.textContent = `${completedSets} / ${totalSets}`;
+      const percent = totalSets ? Math.round((completedSets / totalSets) * 100) : 0;
+      progressFill.style.width = percent + "%";
+      progressText.textContent = `Progress • ${percent}% done`;
+    }
+
+    function renderRecentSessions() {
+      const data = getStorage();
+      const entries = Object.entries(data)
+        .filter(([, value]) => value && value.updatedAt)
+        .sort((a, b) => new Date(b[1].updatedAt) - new Date(a[1].updatedAt))
+        .slice(0, 8);
+
+      recentList.innerHTML = "";
+
+      if (!entries.length) {
+        recentList.innerHTML = `<div class="recent-item"><strong>No saved sessions yet.</strong><div class="muted">Your recent logs will show up here.</div></div>`;
+        return;
+      }
+
+      entries.forEach(([key, value]) => {
+        const [date, workoutName] = key.split("|");
+        let totalSets = 0;
+        let completedSets = 0;
+
+        value.exercises.forEach(ex => {
+          totalSets += ex.sets.length;
+          ex.sets.forEach(set => {
+            if (ex.unilateral) {
+              if ((set.leftReps || "").trim() !== "" && (set.rightReps || "").trim() !== "") {
+                completedSets++;
+              }
+            } else {
+              if ((set.reps || "").trim() !== "") {
+                completedSets++;
+              }
+            }
+          });
+        });
+
+        const item = document.createElement("div");
+        item.className = "recent-item";
+        item.innerHTML = `
+          <strong>${workoutName}</strong>
+          <div class="muted">${date}</div>
+          <div class="muted">${completedSets}/${totalSets} sets filled</div>
+        `;
+        recentList.appendChild(item);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function toggleUnilateral(exerciseIndex) {
+      const workout = getCurrentWorkoutTemplate();
+      const data = getStorage();
+      const key = getLogKey(logDate.value, workout.name);
+      const current = getOrCreateCurrentLog();
+      const currentState = current.exercises[exerciseIndex];
+      const newMode = !currentState.unilateral;
+
+      current.exercises[exerciseIndex].unilateral = newMode;
+      current.exercises[exerciseIndex].sets = [];
+
+      for (let s = 0; s < workout.exercises[exerciseIndex].sets; s++) {
+        if (newMode) {
+          current.exercises[exerciseIndex].sets.push({
+            leftWeight: "",
+            leftReps: "",
+            rightWeight: "",
+            rightReps: ""
+          });
+        } else {
+          current.exercises[exerciseIndex].sets.push({
+            weight: "",
+            reps: ""
+          });
+        }
+      }
+
+      data[key] = current;
+      setStorage(data);
+      renderWorkoutForm();
+      saveStatus.textContent = "Updated unilateral mode.";
+    }
+
+    function init() {
+      renderHero();
+      renderSplit();
+      populateWorkoutSelect();
+      logDate.value = formatDateISO(today);
+      renderWorkoutForm();
+      renderRecentSessions();
+
+      workoutSelect.addEventListener("change", () => {
+        renderWorkoutForm();
+        saveStatus.textContent = "Switched workout.";
+      });
+
+      logDate.addEventListener("change", () => {
+        renderWorkoutForm();
+        saveStatus.textContent = "Date changed.";
+      });
+
+      exerciseList.addEventListener("input", () => {
+        updateSummary();
+      });
+
+      exerciseList.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-toggle-unilateral]");
+        if (!btn) return;
+        const idx = Number(btn.dataset.toggleUnilateral);
+        toggleUnilateral(idx);
+      });
+
+      workoutNote.addEventListener("input", updateSummary);
+
+      saveBtn.addEventListener("click", saveCurrentLog);
+
+      clearBtn.addEventListener("click", () => {
+        if (confirm("Clear this saved log for the selected date/workout?")) {
+          clearCurrentLog();
+        }
+      });
+    }
+
+    init();
   </script>
 </body>
 </html>
-
-
