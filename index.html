@@ -615,11 +615,11 @@
     },
     Sunday: { name: "Rest", exercises: [] }
   };
-</script>
 
   const ORDER = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
   const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const STORAGE_KEY = "workoutTrackerV6";
+  const STORAGE_KEY = "workoutTrackerV8";
+  const LEGACY_STORAGE_KEY = "workoutTrackerV7";
 
   const today = new Date();
   const todayName = DAY_NAMES[today.getDay()];
@@ -662,6 +662,18 @@
     });
   }
 
+  function prettyISODate(iso) {
+    if (!iso || typeof iso !== "string") return "—";
+    const parts = iso.split("-").map(Number);
+    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return iso;
+    const [y, m, d] = parts;
+    return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+  }
+
   function escapeHtml(str) {
     return String(str ?? "")
       .replace(/&/g, "&amp;")
@@ -670,16 +682,12 @@
       .replace(/>/g, "&gt;");
   }
 
-  function loadStore() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    } catch {
-      return {};
-    }
+  function deepCopy(value) {
+    return JSON.parse(JSON.stringify(value));
   }
 
-  function saveStore(store) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  function emptyStore() {
+    return { version: 8, sessions: {} };
   }
 
   function getPlanByName(name) {
@@ -709,20 +717,18 @@
     return {
       workoutName: plan.name,
       date: dateValue,
-      updatedAt: "",
       workoutNote: "",
       exercises: plan.exercises.map(ex => emptyExerciseState(ex))
     };
   }
 
-  function normalizeLog(plan, rawLog, dateValue = todayISO) {
+  function normalizeSingleLog(plan, rawLog, dateValue = todayISO) {
     const base = emptyLog(plan, dateValue);
     if (!rawLog || typeof rawLog !== "object") return base;
 
     const normalized = {
       workoutName: plan.name,
       date: rawLog.date || dateValue,
-      updatedAt: rawLog.updatedAt || "",
       workoutNote: rawLog.workoutNote || "",
       exercises: []
     };
@@ -762,53 +768,147 @@
     return normalized;
   }
 
-  function getCurrentLog() {
+  function normalizeEntry(plan, rawEntry, dateValue = todayISO) {
+    if (!rawEntry || typeof rawEntry !== "object") {
+      return {
+        draft: emptyLog(plan, dateValue),
+        saved: null,
+        savedAt: ""
+      };
+    }
+
+    const looksLikeV8 =
+      Object.prototype.hasOwnProperty.call(rawEntry, "draft") ||
+      Object.prototype.hasOwnProperty.call(rawEntry, "saved") ||
+      Object.prototype.hasOwnProperty.call(rawEntry, "savedAt");
+
+    if (looksLikeV8) {
+      return {
+        draft: normalizeSingleLog(plan, rawEntry.draft || rawEntry.saved, dateValue),
+        saved: rawEntry.saved ? normalizeSingleLog(plan, rawEntry.saved, dateValue) : null,
+        savedAt: rawEntry.savedAt || ""
+      };
+    }
+
+    const migratedLog = normalizeSingleLog(plan, rawEntry, dateValue);
+    const savedAt = rawEntry.updatedAt || "";
+
+    return {
+      draft: migratedLog,
+      saved: savedAt ? deepCopy(migratedLog) : null,
+      savedAt
+    };
+  }
+
+  function migrateLegacyStore(legacy) {
+    const migrated = emptyStore();
+    if (!legacy || typeof legacy !== "object") return migrated;
+
+    Object.entries(legacy).forEach(([key, value]) => {
+      const [date, workoutName] = key.split("|");
+      const plan = getPlanByName(workoutName);
+      if (!plan) return;
+      migrated.sessions[key] = normalizeEntry(plan, value, date || todayISO);
+    });
+
+    return migrated;
+  }
+
+  function loadStore() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (parsed && typeof parsed === "object" && parsed.version === 8 && parsed.sessions && typeof parsed.sessions === "object") {
+        return parsed;
+      }
+    } catch (error) {
+      console.error("Could not read current workout store:", error);
+    }
+
+    try {
+      const legacyParsed = JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY) || "null");
+      if (legacyParsed && typeof legacyParsed === "object") {
+        const migrated = migrateLegacyStore(legacyParsed);
+        saveStore(migrated);
+        try {
+          localStorage.removeItem(LEGACY_STORAGE_KEY);
+        } catch (removeError) {
+          console.warn("Could not remove legacy workout store:", removeError);
+        }
+        return migrated;
+      }
+    } catch (error) {
+      console.error("Could not read legacy workout store:", error);
+    }
+
+    return emptyStore();
+  }
+
+  function saveStore(store) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      return true;
+    } catch (error) {
+      console.error("Could not save workout store:", error);
+      return false;
+    }
+  }
+
+  function getCurrentEntry() {
     const store = loadStore();
-    return normalizeLog(todayPlan, store[currentKey()], todayISO);
+    return normalizeEntry(todayPlan, store.sessions[currentKey()], todayISO);
+  }
+
+  function getCurrentLog() {
+    return getCurrentEntry().draft;
   }
 
   function writeCurrentDraft(log) {
     const store = loadStore();
-    const previousSavedTime = store[currentKey()]?.updatedAt || "";
-    const normalized = normalizeLog(todayPlan, log, todayISO);
-    normalized.updatedAt = previousSavedTime;
-    store[currentKey()] = normalized;
-    saveStore(store);
+    const key = currentKey();
+    const entry = normalizeEntry(todayPlan, store.sessions[key], todayISO);
+    entry.draft = normalizeSingleLog(todayPlan, log, todayISO);
+    store.sessions[key] = entry;
+    return saveStore(store);
   }
 
-  function saveCurrentLog(finalSave = false) {
+  function saveCurrentLog() {
     if (isRestDay) return;
 
     const store = loadStore();
-    const log = normalizeLog(todayPlan, collectFormState(), todayISO);
+    const key = currentKey();
+    const entry = normalizeEntry(todayPlan, store.sessions[key], todayISO);
+    const log = normalizeSingleLog(todayPlan, collectFormState(), todayISO);
+    const savedAt = new Date().toISOString();
 
-    if (finalSave) {
-      log.updatedAt = new Date().toISOString();
-    } else {
-      log.updatedAt = store[currentKey()]?.updatedAt || "";
+    entry.draft = log;
+    entry.saved = deepCopy(log);
+    entry.savedAt = savedAt;
+    store.sessions[key] = entry;
+
+    if (!saveStore(store)) {
+      saveStatus.textContent = "Couldn’t save on this device/browser.";
+      return;
     }
 
-    store[currentKey()] = log;
-    saveStore(store);
+    const t = new Date(savedAt).toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    });
 
-    if (finalSave) {
-      const t = new Date(log.updatedAt).toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit"
-      });
-      saveStatus.textContent = `Saved • ${t}`;
-    } else {
-      saveStatus.textContent = "Draft updated.";
-    }
-
+    saveStatus.textContent = `Saved • ${t}`;
     renderRecent();
     updateProgress(false);
   }
 
   function clearCurrentLog() {
     const store = loadStore();
-    delete store[currentKey()];
-    saveStore(store);
+    delete store.sessions[currentKey()];
+
+    if (!saveStore(store)) {
+      saveStatus.textContent = "Couldn’t clear the workout on this device/browser.";
+      return;
+    }
+
     renderWorkout();
     renderRecent();
     saveStatus.textContent = "Cleared today’s workout.";
@@ -818,7 +918,6 @@
     const log = {
       workoutName: todayPlan.name,
       date: todayISO,
-      updatedAt: "",
       workoutNote: workoutNote.value,
       exercises: []
     };
@@ -857,9 +956,8 @@
 
   function findPreviousWorkoutLog(workoutName, beforeDate) {
     const store = loadStore();
-    const plan = getPlanByName(workoutName);
 
-    const candidates = Object.entries(store)
+    const candidates = Object.entries(store.sessions)
       .map(([key, value]) => {
         const [date, workout] = key.split("|");
         return { date, workout, value };
@@ -867,12 +965,17 @@
       .filter(item =>
         item.workout === workoutName &&
         item.date < beforeDate &&
-        item.value?.updatedAt
+        item.value?.savedAt &&
+        item.value?.saved
       )
       .sort((a, b) => b.date.localeCompare(a.date));
 
-    if (!candidates.length || !plan) return null;
-    return normalizeLog(plan, candidates[0].value, candidates[0].date);
+    if (!candidates.length) return null;
+
+    const plan = getPlanByName(workoutName);
+    if (!plan) return null;
+
+    return normalizeSingleLog(plan, candidates[0].value.saved, candidates[0].date);
   }
 
   function parseNumber(value) {
@@ -1147,9 +1250,9 @@
   }
 
   function updateProgress(shouldWriteDraft = true) {
-    if (isRestDay) return;
+    if (isRestDay) return true;
 
-    const state = collectFormState();
+    const state = normalizeSingleLog(todayPlan, collectFormState(), todayISO);
     let totalSets = 0;
     let completedSets = 0;
 
@@ -1173,22 +1276,21 @@
     progressFill.style.width = percent + "%";
     progressLabel.textContent = `Progress • ${percent}% complete`;
 
-    if (shouldWriteDraft) {
-      writeCurrentDraft(state);
-    }
+    if (!shouldWriteDraft) return true;
+    return writeCurrentDraft(state);
   }
 
   function renderRecent() {
     if (isRestDay) return;
 
     const store = loadStore();
-    const entries = Object.entries(store)
+    const entries = Object.entries(store.sessions)
       .map(([key, value]) => {
         const [date, workoutName] = key.split("|");
         return { date, workoutName, value };
       })
-      .filter(item => item.value?.updatedAt)
-      .sort((a, b) => new Date(b.value.updatedAt) - new Date(a.value.updatedAt))
+      .filter(item => item.value?.savedAt && item.value?.saved)
+      .sort((a, b) => new Date(b.value.savedAt) - new Date(a.value.savedAt))
       .slice(0, 8);
 
     recentList.innerHTML = "";
@@ -1205,8 +1307,9 @@
 
     entries.forEach(item => {
       const plan = getPlanByName(item.workoutName);
-      const normalized = plan ? normalizeLog(plan, item.value, item.date) : item.value;
+      if (!plan) return;
 
+      const normalized = normalizeSingleLog(plan, item.value.saved, item.date);
       let total = 0;
       let done = 0;
 
@@ -1221,29 +1324,44 @@
         });
       });
 
+      const savedTime = new Date(item.value.savedAt).toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+      });
+
       const div = document.createElement("div");
       div.className = "recent-item";
       div.innerHTML = `
         <div class="recent-top">
           <div>
             <div class="recent-name">${item.workoutName}</div>
-            <div class="muted">${item.date}</div>
+            <div class="muted">${prettyISODate(item.date)} • Saved ${savedTime}</div>
           </div>
           <div class="bubble">${done}/${total}</div>
         </div>
       `;
       recentList.appendChild(div);
     });
+
+    if (!recentList.children.length) {
+      recentList.innerHTML = `
+        <div class="recent-item">
+          <div class="recent-name">No saved sessions yet.</div>
+          <div class="muted">Finish a workout and hit save — it’ll show up here.</div>
+        </div>
+      `;
+    }
   }
 
   function toggleUnilateral(exerciseIndex) {
-    const store = loadStore();
-    const log = getCurrentLog();
     const exercise = todayPlan.exercises[exerciseIndex];
+    if (!exercise?.canBeUnilateral) return;
 
-    if (!exercise.canBeUnilateral) return;
-
-    const currentState = log.exercises[exerciseIndex];
+    const store = loadStore();
+    const key = currentKey();
+    const entry = normalizeEntry(todayPlan, store.sessions[key], todayISO);
+    const liveLog = normalizeSingleLog(todayPlan, collectFormState(), todayISO);
+    const currentState = liveLog.exercises[exerciseIndex];
     const nextUni = !currentState.unilateral;
     const newSets = [];
 
@@ -1267,13 +1385,28 @@
       }
     });
 
-    currentState.unilateral = nextUni;
-    currentState.sets = newSets;
+    liveLog.exercises[exerciseIndex] = {
+      unilateral: nextUni,
+      note: currentState.note || "",
+      sets: newSets
+    };
 
-    store[currentKey()] = normalizeLog(todayPlan, log, todayISO);
-    saveStore(store);
+    entry.draft = normalizeSingleLog(todayPlan, liveLog, todayISO);
+    store.sessions[key] = entry;
+
+    if (!saveStore(store)) {
+      saveStatus.textContent = "Couldn’t update unilateral mode on this device/browser.";
+      return;
+    }
+
     renderWorkout();
     saveStatus.textContent = "Changed unilateral mode.";
+  }
+
+  function checkForDateRollover() {
+    if (formatISO(new Date()) !== todayISO) {
+      location.reload();
+    }
   }
 
   function init() {
@@ -1293,8 +1426,10 @@
     renderRecent();
 
     exerciseList.addEventListener("input", () => {
-      updateProgress();
-      saveStatus.textContent = "Draft updated.";
+      const draftSaved = updateProgress();
+      saveStatus.textContent = draftSaved
+        ? "Draft updated."
+        : "Couldn’t update draft on this device/browser.";
     });
 
     exerciseList.addEventListener("click", (e) => {
@@ -1304,13 +1439,20 @@
     });
 
     workoutNote.addEventListener("input", () => {
-      updateProgress();
-      saveStatus.textContent = "Draft updated.";
+      const draftSaved = updateProgress();
+      saveStatus.textContent = draftSaved
+        ? "Draft updated."
+        : "Couldn’t update draft on this device/browser.";
     });
 
-    saveBtn.addEventListener("click", () => saveCurrentLog(true));
+    saveBtn.addEventListener("click", () => saveCurrentLog());
     clearBtn.addEventListener("click", () => {
       if (confirm("Clear today’s workout log?")) clearCurrentLog();
+    });
+
+    window.addEventListener("focus", checkForDateRollover);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") checkForDateRollover();
     });
   }
 
