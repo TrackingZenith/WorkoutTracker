@@ -4,21 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WorkoutTracker</title>
-  <meta name="theme-color" content="#0f8f5b" />
+  <meta name="theme-color" content="#0b8f5c" />
   <style>
     :root{
-      --bg-1:#f4fff8;
-      --bg-2:#e8fff1;
-      --card:#ffffff;
-      --card-2:#f7fffa;
-      --text:#103127;
-      --muted:#5d766d;
-      --line:#d8efe1;
-      --green:#0f8f5b;
-      --green-2:#14a56b;
-      --green-3:#d9f7e8;
-      --shadow:0 14px 40px rgba(15, 143, 91, 0.14);
-      --radius:22px;
+      --bg:#0b1110;
+      --bg-2:#0f1715;
+      --panel:#111b18;
+      --panel-2:#15211d;
+      --panel-3:#1a2a25;
+      --line:#234037;
+      --text:#f5fff9;
+      --muted:#9db8ae;
+      --green:#0b8f5c;
+      --green-2:#13b373;
+      --green-3:#12392a;
+      --green-4:#0e2b20;
+      --white:#ffffff;
+      --shadow:0 16px 38px rgba(0,0,0,.34);
+      --radius:24px;
     }
 
     * { box-sizing: border-box; }
@@ -26,11 +29,12 @@
     html, body {
       margin: 0;
       padding: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, #ffffff 0%, #effff6 38%, #e8fff1 100%);
       min-height: 100%;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(19,179,115,.12), transparent 28%),
+        linear-gradient(180deg, #0a100f 0%, #0b1110 100%);
+      color: var(--text);
     }
 
     body {
@@ -46,43 +50,43 @@
     }
 
     .hero {
-      background: linear-gradient(145deg, var(--green), var(--green-2));
-      color: white;
-      border-radius: 28px;
-      padding: 18px;
-      box-shadow: 0 16px 44px rgba(15, 143, 91, 0.28);
       position: relative;
       overflow: hidden;
+      border-radius: 28px;
+      padding: 18px;
+      background: linear-gradient(145deg, var(--green), var(--green-2));
+      box-shadow: 0 18px 46px rgba(11, 143, 92, .28);
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      inset: auto -40px -40px auto;
-      width: 160px;
-      height: 160px;
+      right: -34px;
+      bottom: -34px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.14);
+      background: rgba(255,255,255,.14);
       filter: blur(2px);
     }
 
     .eyebrow {
       font-size: 12px;
-      letter-spacing: .12em;
       text-transform: uppercase;
-      opacity: .82;
+      letter-spacing: .14em;
+      opacity: .92;
       margin-bottom: 8px;
     }
 
     .hero h1 {
       margin: 0 0 8px;
       font-size: 28px;
-      line-height: 1.05;
+      line-height: 1.04;
     }
 
     .hero p {
       margin: 0;
-      color: rgba(255,255,255,0.90);
+      color: rgba(255,255,255,.92);
       font-size: 14px;
     }
 
@@ -94,37 +98,37 @@
     }
 
     .hero-pill {
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
       border-radius: 18px;
-      padding: 12px;
+      padding: 12px 14px;
       backdrop-filter: blur(6px);
     }
 
     .hero-pill .label {
       font-size: 11px;
+      letter-spacing: .11em;
       text-transform: uppercase;
-      letter-spacing: .10em;
-      opacity: .75;
-      margin-bottom: 4px;
+      opacity: .82;
+      margin-bottom: 5px;
     }
 
     .hero-pill .value {
-      font-weight: 700;
-      font-size: 15px;
-      line-height: 1.2;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.12;
     }
 
     .card {
-      background: var(--card);
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
       padding: 16px;
+      box-shadow: var(--shadow);
     }
 
     .card h2 {
-      margin: 0 0 10px;
+      margin: 0 0 8px;
       font-size: 18px;
     }
 
@@ -136,7 +140,7 @@
     .split-list {
       display: grid;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .split-item {
@@ -146,121 +150,97 @@
       gap: 12px;
       padding: 12px 14px;
       border-radius: 18px;
-      background: var(--card-2);
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.05);
     }
 
     .split-item.active {
-      background: var(--green-3);
-      border-color: #bde9d0;
-      box-shadow: inset 0 0 0 1px rgba(15,143,91,0.06);
+      background: linear-gradient(180deg, var(--green-4), var(--green-3));
+      border-color: rgba(19,179,115,.28);
+      box-shadow: inset 0 0 0 1px rgba(19,179,115,.08);
     }
 
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 58px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: white;
-      border: 1px solid var(--line);
+    .day-text {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .day-sub {
       font-size: 12px;
-      font-weight: 700;
-      color: var(--green);
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .control {
-      display: grid;
-      gap: 6px;
-    }
-
-    label {
-      font-size: 12px;
-      font-weight: 700;
       color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .08em;
+      margin-top: 3px;
     }
 
-    input, select, textarea, button {
-      font: inherit;
+    .bubble {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #ddfff1;
+      min-width: 74px;
+      text-align: center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
     }
 
-    input, select, textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: white;
-      color: var(--text);
-      border-radius: 16px;
-      padding: 12px 14px;
-      outline: none;
-      transition: .18s ease;
+    .split-item.active .bubble {
+      background: linear-gradient(145deg, var(--green), var(--green-2));
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 10px 20px rgba(11,143,92,.24);
     }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 4px rgba(15, 143, 91, 0.10);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 92px;
-    }
-
-    .summary {
+    .meta-bar {
       display: grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
       gap: 10px;
       margin-top: 12px;
     }
 
-    .summary-box {
-      background: var(--card-2);
-      border: 1px solid var(--line);
+    .meta-box {
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border: 1px solid rgba(255,255,255,.06);
       border-radius: 18px;
       padding: 12px;
     }
 
-    .summary-box .k {
+    .meta-k {
       font-size: 11px;
+      letter-spacing: .1em;
       text-transform: uppercase;
-      letter-spacing: .10em;
       color: var(--muted);
       margin-bottom: 4px;
     }
 
-    .summary-box .v {
-      font-weight: 800;
-      font-size: 20px;
-      line-height: 1.1;
+    .meta-v {
+      font-size: 21px;
+      font-weight: 900;
+      line-height: 1.08;
     }
 
     .progress-wrap {
       margin-top: 12px;
     }
 
+    .progress-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
     .progress-bar {
-      width: 100%;
       height: 12px;
       border-radius: 999px;
-      background: #e8f5ee;
       overflow: hidden;
-      border: 1px solid var(--line);
+      background: #0c1512;
+      border: 1px solid rgba(255,255,255,.06);
     }
 
     .progress-fill {
-      height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--green), #39c887);
-      transition: width .22s ease;
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--green-2));
+      transition: width .2s ease;
     }
 
     .exercise-list {
@@ -270,175 +250,242 @@
     }
 
     .exercise-card {
-      background: linear-gradient(180deg, #ffffff 0%, #fbfffd 100%);
-      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border: 1px solid rgba(255,255,255,.06);
       border-radius: 22px;
       padding: 14px;
     }
 
-    .exercise-top {
+    .exercise-head {
       display: flex;
-      align-items: start;
       justify-content: space-between;
+      align-items: start;
       gap: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .exercise-name {
-      font-weight: 800;
-      font-size: 17px;
-      line-height: 1.15;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.12;
     }
 
-    .exercise-meta {
+    .chips {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: 6px;
+      margin-top: 7px;
     }
 
     .chip {
-      background: var(--green-3);
-      color: var(--green);
-      border: 1px solid #bfe8d1;
-      border-radius: 999px;
       padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(19,179,115,.12);
+      border: 1px solid rgba(19,179,115,.16);
+      color: #c9ffe6;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .tiny-btn {
-      border: none;
-      background: var(--green-3);
-      color: var(--green);
-      border: 1px solid #bfe8d1;
-      padding: 9px 12px;
+    .toggle-btn {
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      padding: 10px 12px;
       border-radius: 14px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
+      min-width: 124px;
     }
 
-    .tiny-btn.active {
-      background: var(--green);
+    .toggle-btn.active {
+      background: linear-gradient(145deg, var(--green), var(--green-2));
+      border-color: transparent;
       color: white;
-      border-color: var(--green);
     }
 
-    .set-grid {
+    .set-list {
       display: grid;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .set-row {
-      display: grid;
-      grid-template-columns: 56px 1fr 1fr;
-      gap: 8px;
+    .set-card {
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.02);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .set-top {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-    }
-
-    .set-row.unilateral {
-      grid-template-columns: 56px 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
     .set-label {
       font-size: 12px;
-      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .1em;
       color: var(--muted);
+      font-weight: 900;
+    }
+
+    .set-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .set-grid.unilateral {
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+
+    .sub-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 5px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .08em;
-      text-align: center;
-      padding: 10px 8px;
-      background: var(--card-2);
-      border: 1px solid var(--line);
+    }
+
+    input, textarea, button {
+      font: inherit;
+    }
+
+    input, textarea {
+      width: 100%;
       border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: #0b1412;
+      color: var(--text);
+      padding: 11px 12px;
+      outline: none;
+      transition: .16s ease;
     }
 
-    .exercise-note {
-      margin-top: 10px;
+    input::placeholder, textarea::placeholder {
+      color: #6f8c82;
     }
 
-    .exercise-note textarea {
-      min-height: 70px;
-      background: #fcfffd;
+    input:focus, textarea:focus {
+      border-color: rgba(19,179,115,.56);
+      box-shadow: 0 0 0 4px rgba(19,179,115,.11);
     }
 
-    .note-block {
-      margin-top: 12px;
+    input {
+      min-height: 44px;
     }
 
-    .button-row {
+    textarea {
+      resize: vertical;
+      min-height: 74px;
+      margin-top: 8px;
+    }
+
+    .last-line,
+    .rec-line {
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+    .last-line {
+      color: #bfd8ce;
+    }
+
+    .rec-line {
+      color: #d8ffeb;
+      font-weight: 700;
+    }
+
+    .buttons {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
     .btn {
       border: none;
       border-radius: 16px;
       padding: 12px 14px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
-      transition: .18s ease;
+      transition: .16s ease;
     }
 
     .btn-primary {
       background: linear-gradient(145deg, var(--green), var(--green-2));
       color: white;
-      box-shadow: 0 10px 24px rgba(15,143,91,0.22);
+      box-shadow: 0 12px 24px rgba(11,143,92,.24);
     }
 
     .btn-secondary {
-      background: white;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
       color: var(--text);
-      border: 1px solid var(--line);
+    }
+
+    .save-status {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .recent-list {
       display: grid;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .recent-item {
-      border: 1px solid var(--line);
-      background: var(--card-2);
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.02);
       border-radius: 18px;
       padding: 12px;
-      display: grid;
-      gap: 4px;
+    }
+
+    .recent-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+    }
+
+    .recent-name {
+      font-weight: 900;
+      font-size: 15px;
     }
 
     .footer-note {
       text-align: center;
       color: var(--muted);
       font-size: 12px;
-      padding-top: 4px;
+      padding-top: 2px;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     @media (max-width: 640px) {
-      .controls, .summary {
+      .hero-grid, .meta-bar {
         grid-template-columns: 1fr;
       }
 
-      .hero-grid {
-        grid-template-columns: 1fr;
+      .exercise-head,
+      .set-top,
+      .recent-top {
+        display: block;
       }
 
-      .set-row.unilateral {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .set-row.unilateral .set-label {
-        grid-column: 1 / -1;
-      }
-
-      .set-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .set-row .set-label {
-        grid-column: 1 / -1;
+      .toggle-btn {
+        margin-top: 10px;
+        width: 100%;
       }
     }
   </style>
@@ -446,60 +493,49 @@
 <body>
   <div class="app">
     <section class="hero">
-      <div class="eyebrow" id="todayLine">Today</div>
-      <h1 id="todayWorkoutTitle">WorkoutTracker</h1>
-      <p id="todayWorkoutSub">Built for your split.</p>
+      <div class="eyebrow" id="heroDate">Today</div>
+      <h1 id="heroTitle">WorkoutTracker</h1>
+      <p id="heroSub">Built for your split.</p>
 
       <div class="hero-grid">
         <div class="hero-pill">
-          <div class="label">Start with</div>
-          <div class="value" id="startWith">—</div>
+          <div class="label">Start With</div>
+          <div class="value" id="heroStart">—</div>
         </div>
         <div class="hero-pill">
-          <div class="label">Finish with</div>
-          <div class="value" id="finishWith">—</div>
+          <div class="label">Finish With</div>
+          <div class="value" id="heroFinish">—</div>
         </div>
       </div>
     </section>
 
     <section class="card">
       <h2>Your Weekly Split</h2>
-      <div class="muted">Today gets highlighted automatically.</div>
+      <div class="muted">It auto-highlights today in the green bubble.</div>
       <div class="split-list" id="splitList"></div>
     </section>
 
-    <section class="card">
-      <h2>Workout Logger</h2>
-      <div class="muted">Mobile-friendly, remembers your logs on this device/browser.</div>
+    <section class="card" id="trackerSection">
+      <h2>Today’s Workout</h2>
+      <div class="muted">Only today’s correct workout can be tracked. Rest day = no tracker.</div>
 
-      <div class="controls">
-        <div class="control">
-          <label for="logDate">Log Date</label>
-          <input type="date" id="logDate" />
+      <div class="meta-bar">
+        <div class="meta-box">
+          <div class="meta-k">Workout</div>
+          <div class="meta-v" id="metaWorkout">—</div>
         </div>
-        <div class="control">
-          <label for="workoutSelect">Workout</label>
-          <select id="workoutSelect"></select>
+        <div class="meta-box">
+          <div class="meta-k">Exercises</div>
+          <div class="meta-v" id="metaExercises">0</div>
         </div>
-      </div>
-
-      <div class="summary">
-        <div class="summary-box">
-          <div class="k">Workout</div>
-          <div class="v" id="summaryWorkout">—</div>
-        </div>
-        <div class="summary-box">
-          <div class="k">Exercises</div>
-          <div class="v" id="summaryExercises">0</div>
-        </div>
-        <div class="summary-box">
-          <div class="k">Completed Sets</div>
-          <div class="v" id="summarySets">0 / 0</div>
+        <div class="meta-box">
+          <div class="meta-k">Completed Sets</div>
+          <div class="meta-v" id="metaSets">0 / 0</div>
         </div>
       </div>
 
       <div class="progress-wrap">
-        <div class="muted" id="progressText" style="margin-bottom:6px;">Progress</div>
+        <div class="progress-label" id="progressLabel">Progress</div>
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
@@ -507,28 +543,26 @@
 
       <div class="exercise-list" id="exerciseList"></div>
 
-      <div class="note-block">
-        <label for="workoutNote">Workout Notes</label>
-        <textarea id="workoutNote" placeholder="How’d it feel? Anything to remember for next time?"></textarea>
+      <div style="margin-top:12px;">
+        <div class="sub-label">Workout Notes</div>
+        <textarea id="workoutNote" placeholder="How did the session feel? Anything to change next time?"></textarea>
       </div>
 
-      <div class="button-row">
-        <button class="btn btn-primary" id="saveBtn">Save workout</button>
-        <button class="btn btn-secondary" id="clearBtn">Clear this log</button>
+      <div class="buttons">
+        <button class="btn btn-primary" id="saveBtn">Save today’s workout</button>
+        <button class="btn btn-secondary" id="clearBtn">Clear today’s workout</button>
       </div>
 
-      <div class="muted" id="saveStatus" style="margin-top:10px;">Not saved yet.</div>
+      <div class="save-status" id="saveStatus">Auto-draft is on for today. Hit save when you're done.</div>
     </section>
 
-    <section class="card">
-      <h2>Recent Saved Sessions</h2>
-      <div class="muted">Your latest saved logs from this device.</div>
+    <section class="card" id="recentSection">
+      <h2>Recent Sessions</h2>
+      <div class="muted">Your latest saved logs on this device/browser.</div>
       <div class="recent-list" id="recentList"></div>
     </section>
 
-    <div class="footer-note">
-      Warm-up sets don’t count. Logs are saved locally on your phone/browser.
-    </div>
+    <div class="footer-note">Warm-up sets don’t count. Everything saves locally on this device.</div>
   </div>
 
   <script>
@@ -536,94 +570,83 @@
       Monday: {
         name: "Push A",
         exercises: [
-          { name: "Smith incline press", sets: 3, repRange: "6–10" },
-          { name: "Cable fly", sets: 1, repRange: "10–15" },
-          { name: "Cable lateral raise", sets: 2, repRange: "12–20" },
-          { name: "Skullcrushers", sets: 2, repRange: "8–12" }
+          { name: "Smith incline press", sets: 3, repMin: 6, repMax: 10 },
+          { name: "Cable fly", sets: 1, repMin: 10, repMax: 15 },
+          { name: "Cable lateral raise", sets: 2, repMin: 12, repMax: 20, canBeUnilateral: true, defaultUnilateral: false },
+          { name: "Skullcrushers", sets: 2, repMin: 8, repMax: 12 }
         ]
       },
       Tuesday: {
         name: "Pull A",
         exercises: [
-          { name: "Wide-grip pullup", sets: 2, repRange: "5–8" },
-          { name: "Neutral-grip weighted pullup", sets: 2, repRange: "5–8" },
-          { name: "1-arm kneeling cable lat pulldown", sets: 2, repRange: "8–12", unilateral: true },
-          { name: "Incline DB curl", sets: 2, repRange: "8–12" }
+          { name: "Wide-grip pullup", sets: 2, repMin: 5, repMax: 8 },
+          { name: "Neutral-grip weighted pullup", sets: 2, repMin: 5, repMax: 8 },
+          { name: "1-arm kneeling cable lat pulldown", sets: 2, repMin: 8, repMax: 12, canBeUnilateral: true, defaultUnilateral: true },
+          { name: "Incline DB curl", sets: 2, repMin: 8, repMax: 12 }
         ]
       },
       Wednesday: {
         name: "Legs",
         exercises: [
-          { name: "Smith squat", sets: 3, repRange: "6–10" },
-          { name: "Machine leg extension", sets: 2, repRange: "10–15" },
-          { name: "Hamstring curl", sets: 2, repRange: "10–15" },
-          { name: "Calf raise", sets: 1, repRange: "10–20" }
+          { name: "Smith squat", sets: 3, repMin: 6, repMax: 10 },
+          { name: "Machine leg extension", sets: 2, repMin: 10, repMax: 15 },
+          { name: "Hamstring curl", sets: 2, repMin: 10, repMax: 15 },
+          { name: "Calf raise", sets: 1, repMin: 10, repMax: 20 }
         ]
       },
-      Thursday: {
-        name: "Rest",
-        exercises: []
-      },
+      Thursday: { name: "Rest", exercises: [] },
       Friday: {
         name: "Push B",
         exercises: [
-          { name: "Flat smith press", sets: 3, repRange: "6–10" },
-          { name: "Cable fly", sets: 1, repRange: "10–15" },
-          { name: "Cable lateral raise", sets: 2, repRange: "12–20" },
-          { name: "Skullcrushers", sets: 2, repRange: "10–15" }
+          { name: "Flat smith press", sets: 3, repMin: 6, repMax: 10 },
+          { name: "Cable fly", sets: 1, repMin: 10, repMax: 15 },
+          { name: "Cable lateral raise", sets: 2, repMin: 12, repMax: 20, canBeUnilateral: true, defaultUnilateral: false },
+          { name: "Skullcrushers", sets: 2, repMin: 10, repMax: 15 }
         ]
       },
       Saturday: {
         name: "Pull B",
         exercises: [
-          { name: "Lat pulldown", sets: 2, repRange: "8–12" },
-          { name: "Seated cable row", sets: 3, repRange: "8–12" },
-          { name: "Preacher curl", sets: 2, repRange: "10–15" },
-          { name: "Rear delt fly", sets: 1, repRange: "12–20" }
+          { name: "Lat pulldown", sets: 2, repMin: 8, repMax: 12 },
+          { name: "Seated cable row", sets: 3, repMin: 8, repMax: 12 },
+          { name: "Preacher curl", sets: 2, repMin: 10, repMax: 15 },
+          { name: "Rear delt fly", sets: 1, repMin: 12, repMax: 20 }
         ]
       },
-      Sunday: {
-        name: "Rest",
-        exercises: []
-      }
+      Sunday: { name: "Rest", exercises: [] }
     };
 
-    const allWorkoutTemplates = [
-      split.Monday,
-      split.Tuesday,
-      split.Wednesday,
-      split.Friday,
-      split.Saturday
-    ];
-
-    const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const STORAGE_KEY = "workoutTrackerV3";
+    const ORDER = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const STORAGE_KEY = "workoutTrackerV5";
 
     const today = new Date();
-    const todayDayName = dayNames[today.getDay()];
-    const todayPlan = split[todayDayName];
+    const todayName = DAY_NAMES[today.getDay()];
+    const todayISO = formatISO(today);
+    const todayPlan = split[todayName];
+    const isRestDay = todayPlan.name === "Rest";
 
+    const heroDate = document.getElementById("heroDate");
+    const heroTitle = document.getElementById("heroTitle");
+    const heroSub = document.getElementById("heroSub");
+    const heroStart = document.getElementById("heroStart");
+    const heroFinish = document.getElementById("heroFinish");
     const splitList = document.getElementById("splitList");
-    const todayLine = document.getElementById("todayLine");
-    const todayWorkoutTitle = document.getElementById("todayWorkoutTitle");
-    const todayWorkoutSub = document.getElementById("todayWorkoutSub");
-    const startWith = document.getElementById("startWith");
-    const finishWith = document.getElementById("finishWith");
-    const logDate = document.getElementById("logDate");
-    const workoutSelect = document.getElementById("workoutSelect");
+    const trackerSection = document.getElementById("trackerSection");
+    const recentSection = document.getElementById("recentSection");
+    const metaWorkout = document.getElementById("metaWorkout");
+    const metaExercises = document.getElementById("metaExercises");
+    const metaSets = document.getElementById("metaSets");
+    const progressLabel = document.getElementById("progressLabel");
+    const progressFill = document.getElementById("progressFill");
     const exerciseList = document.getElementById("exerciseList");
     const workoutNote = document.getElementById("workoutNote");
     const saveBtn = document.getElementById("saveBtn");
     const clearBtn = document.getElementById("clearBtn");
     const saveStatus = document.getElementById("saveStatus");
     const recentList = document.getElementById("recentList");
-    const summaryWorkout = document.getElementById("summaryWorkout");
-    const summaryExercises = document.getElementById("summaryExercises");
-    const summarySets = document.getElementById("summarySets");
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
 
-    function formatDateISO(date) {
+    function formatISO(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, "0");
       const d = String(date.getDate()).padStart(2, "0");
@@ -638,7 +661,15 @@
       });
     }
 
-    function getStorage() {
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function loadStore() {
       try {
         return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
       } catch {
@@ -646,389 +677,534 @@
       }
     }
 
-    function setStorage(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    function saveStore(store) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
     }
 
-    function buildEmptyExerciseState(exercise) {
+    function currentKey() {
+      return `${todayISO}|${todayPlan.name}`;
+    }
+
+    function emptyExerciseState(exercise) {
+      const unilateral = !!exercise.defaultUnilateral;
       const sets = [];
       for (let i = 0; i < exercise.sets; i++) {
-        if (exercise.unilateral) {
+        if (unilateral) {
           sets.push({ leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" });
         } else {
           sets.push({ weight: "", reps: "" });
         }
       }
-      return {
-        unilateral: !!exercise.unilateral,
-        note: "",
-        sets
-      };
+      return { unilateral, note: "", sets };
     }
 
-    function buildEmptyLog(workoutTemplate) {
+    function emptyLog(plan) {
       return {
-        workoutName: workoutTemplate.name,
-        workoutNote: "",
+        workoutName: plan.name,
+        date: todayISO,
         updatedAt: "",
-        exercises: workoutTemplate.exercises.map(buildEmptyExerciseState)
+        workoutNote: "",
+        exercises: plan.exercises.map(ex => emptyExerciseState(ex))
       };
     }
 
-    function getLogKey(date, workoutName) {
-      return `${date}|${workoutName}`;
+    function getCurrentLog() {
+      const store = loadStore();
+      return store[currentKey()] || emptyLog(todayPlan);
     }
 
-    function getCurrentWorkoutTemplate() {
-      return allWorkoutTemplates.find(w => w.name === workoutSelect.value) || allWorkoutTemplates[0];
+    function writeCurrentDraft(log) {
+      const store = loadStore();
+      const oldSavedTime = store[currentKey()]?.updatedAt || "";
+      log.updatedAt = oldSavedTime;
+      store[currentKey()] = log;
+      saveStore(store);
     }
 
-    function getOrCreateCurrentLog() {
-      const date = logDate.value;
-      const workout = getCurrentWorkoutTemplate();
-      const data = getStorage();
-      const key = getLogKey(date, workout.name);
+    function saveCurrentLog(finalSave = false) {
+      if (isRestDay) return;
+      const store = loadStore();
+      const log = collectFormState();
+      if (finalSave) {
+        log.updatedAt = new Date().toISOString();
+      } else {
+        log.updatedAt = store[currentKey()]?.updatedAt || "";
+      }
+      store[currentKey()] = log;
+      saveStore(store);
 
-      if (!data[key]) {
-        data[key] = buildEmptyLog(workout);
-        setStorage(data);
+      if (finalSave) {
+        const t = new Date(log.updatedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+        saveStatus.textContent = `Saved • ${t}`;
+      } else {
+        saveStatus.textContent = "Draft updated.";
       }
 
-      return data[key];
-    }
-
-    function saveCurrentLog() {
-      const data = getStorage();
-      const date = logDate.value;
-      const workout = getCurrentWorkoutTemplate();
-      const key = getLogKey(date, workout.name);
-
-      const current = collectCurrentFormState();
-      current.updatedAt = new Date().toISOString();
-      data[key] = current;
-      setStorage(data);
-
-      const savedTime = new Date(current.updatedAt).toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit"
-      });
-      saveStatus.textContent = `Saved • ${savedTime}`;
-      renderRecentSessions();
-      updateSummary();
+      renderRecent();
+      updateProgress();
     }
 
     function clearCurrentLog() {
-      const workout = getCurrentWorkoutTemplate();
-      const data = getStorage();
-      const key = getLogKey(logDate.value, workout.name);
-      delete data[key];
-      setStorage(data);
-      renderWorkoutForm();
-      saveStatus.textContent = "Cleared this log.";
-      renderRecentSessions();
+      const store = loadStore();
+      delete store[currentKey()];
+      saveStore(store);
+      renderWorkout();
+      renderRecent();
+      saveStatus.textContent = "Cleared today’s workout.";
     }
 
-    function collectCurrentFormState() {
-      const workout = getCurrentWorkoutTemplate();
+    function collectFormState() {
       const log = {
-        workoutName: workout.name,
-        workoutNote: workoutNote.value,
+        workoutName: todayPlan.name,
+        date: todayISO,
         updatedAt: "",
+        workoutNote: workoutNote.value,
         exercises: []
       };
 
-      workout.exercises.forEach((exercise, i) => {
-        const card = document.querySelector(`[data-exercise-card="${i}"]`);
-        const unilateral = card.dataset.unilateral === "true";
-        const note = card.querySelector(`[data-note="${i}"]`).value;
-
+      todayPlan.exercises.forEach((exercise, exerciseIndex) => {
+        const card = document.querySelector(`[data-card="${exerciseIndex}"]`);
+        const isUni = card?.dataset.unilateral === "true";
+        const noteValue = card?.querySelector(`[data-note="${exerciseIndex}"]`)?.value || "";
         const sets = [];
-        for (let s = 0; s < exercise.sets; s++) {
-          if (unilateral) {
+
+        for (let setIndex = 0; setIndex < exercise.sets; setIndex++) {
+          if (isUni) {
             sets.push({
-              leftWeight: card.querySelector(`[data-left-weight="${i}-${s}"]`).value,
-              leftReps: card.querySelector(`[data-left-reps="${i}-${s}"]`).value,
-              rightWeight: card.querySelector(`[data-right-weight="${i}-${s}"]`).value,
-              rightReps: card.querySelector(`[data-right-reps="${i}-${s}"]`).value
+              leftWeight: card.querySelector(`[data-left-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
+              leftReps: card.querySelector(`[data-left-reps="${exerciseIndex}-${setIndex}"]`)?.value || "",
+              rightWeight: card.querySelector(`[data-right-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
+              rightReps: card.querySelector(`[data-right-reps="${exerciseIndex}-${setIndex}"]`)?.value || ""
             });
           } else {
             sets.push({
-              weight: card.querySelector(`[data-weight="${i}-${s}"]`).value,
-              reps: card.querySelector(`[data-reps="${i}-${s}"]`).value
+              weight: card.querySelector(`[data-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
+              reps: card.querySelector(`[data-reps="${exerciseIndex}-${setIndex}"]`)?.value || ""
             });
           }
         }
 
-        log.exercises.push({ unilateral, note, sets });
+        log.exercises.push({
+          unilateral: isUni,
+          note: noteValue,
+          sets
+        });
       });
 
       return log;
     }
 
-    function renderHero() {
-      todayLine.textContent = prettyDate(today);
-      todayWorkoutTitle.textContent = todayPlan.name === "Rest" ? "Rest Day" : todayPlan.name;
-      if (todayPlan.name === "Rest") {
-        todayWorkoutSub.textContent = "Recover. Eat. Sleep. Come back stronger.";
-        startWith.textContent = "Recovery";
-        finishWith.textContent = "Recovery";
+    function findPreviousWorkoutLog(workoutName, beforeDate) {
+      const store = loadStore();
+      const candidates = Object.entries(store)
+        .map(([key, value]) => {
+          const [date, workout] = key.split("|");
+          return { key, date, workout, value };
+        })
+        .filter(item => item.workout === workoutName && item.date < beforeDate)
+        .sort((a, b) => b.date.localeCompare(a.date));
+
+      return candidates.length ? candidates[0].value : null;
+    }
+
+    function parseNumber(value) {
+      if (value === null || value === undefined) return null;
+      const cleaned = String(value).trim().replace(/[^\d.+-]/g, "");
+      if (!cleaned) return null;
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : null;
+    }
+
+    function formatNumber(num) {
+      if (!Number.isFinite(num)) return "";
+      return Number.isInteger(num) ? String(num) : String(Math.round(num * 100) / 100);
+    }
+
+    function suggestedJump(exerciseName, weight) {
+      const name = exerciseName.toLowerCase();
+      if (name.includes("smith") || name.includes("squat")) return 10;
+      if (name.includes("pullup") || name.includes("pulldown") || name.includes("row")) return 5;
+      if (name.includes("skull") || name.includes("preacher") || name.includes("curl")) return weight >= 30 ? 5 : 2.5;
+      if (name.includes("lateral") || name.includes("fly")) return 2.5;
+      if (name.includes("extension") || name.includes("hamstring") || name.includes("calf")) return 5;
+      return weight >= 50 ? 5 : 2.5;
+    }
+
+    function formatLikeOriginal(original, newNumber) {
+      const str = String(original ?? "").trim();
+      const prefix = str.startsWith("+") ? "+" : "";
+      return `${prefix}${formatNumber(newNumber)}`;
+    }
+
+    function average(arr) {
+      const nums = arr.filter(v => Number.isFinite(v));
+      if (!nums.length) return null;
+      return nums.reduce((a,b) => a + b, 0) / nums.length;
+    }
+
+    function getSetLastLine(prevSet, unilateral) {
+      if (!prevSet) return "Last: —";
+      if (unilateral) {
+        const hasAny = [prevSet.leftWeight, prevSet.leftReps, prevSet.rightWeight, prevSet.rightReps].some(v => String(v || "").trim() !== "");
+        if (!hasAny) return "Last: —";
+        return `Last: L ${prevSet.leftWeight || "?"} × ${prevSet.leftReps || "?"} • R ${prevSet.rightWeight || "?"} × ${prevSet.rightReps || "?"}`;
+      }
+      const hasAny = [prevSet.weight, prevSet.reps].some(v => String(v || "").trim() !== "");
+      if (!hasAny) return "Last: —";
+      return `Last: ${prevSet.weight || "?"} × ${prevSet.reps || "?"}`;
+    }
+
+    function buildRecommendation(exercise, prevSet, unilateral) {
+      const min = exercise.repMin;
+      const max = exercise.repMax;
+
+      if (!prevSet) {
+        return `Recommendation: first log — pick a controllable weight and aim ${min}-${max} reps.`;
+      }
+
+      let repValue = null;
+      let weightNum = null;
+      let weightRaw = "";
+
+      if (unilateral) {
+        const lRep = parseNumber(prevSet.leftReps);
+        const rRep = parseNumber(prevSet.rightReps);
+        const lWeight = parseNumber(prevSet.leftWeight);
+        const rWeight = parseNumber(prevSet.rightWeight);
+        repValue = average([lRep, rRep]);
+        weightNum = average([lWeight, rWeight]);
+        weightRaw = prevSet.leftWeight || prevSet.rightWeight || "";
       } else {
-        todayWorkoutSub.textContent = "Today’s plan is locked in.";
-        startWith.textContent = todayPlan.exercises[0].name;
-        finishWith.textContent = todayPlan.exercises[todayPlan.exercises.length - 1].name;
+        repValue = parseNumber(prevSet.reps);
+        weightNum = parseNumber(prevSet.weight);
+        weightRaw = prevSet.weight || "";
+      }
+
+      if (!Number.isFinite(repValue)) {
+        return `Recommendation: no last reps logged — aim ${min}-${max} reps with clean form.`;
+      }
+
+      const repRounded = Math.round(repValue);
+      const jump = Number.isFinite(weightNum) ? suggestedJump(exercise.name, weightNum) : null;
+
+      if (repRounded >= max) {
+        if (Number.isFinite(weightNum) && weightRaw !== "") {
+          const nextWeight = Math.max(0, weightNum + jump);
+          return `Recommendation: go up to ${formatLikeOriginal(weightRaw, nextWeight)} and aim ${min}-${Math.min(max - 1, min + 2)} reps.`;
+        }
+        return `Recommendation: go slightly heavier next time and aim ${min}-${Math.min(max - 1, min + 2)} reps.`;
+      }
+
+      if (repRounded === max - 1) {
+        return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${max} reps.`;
+      }
+
+      if (repRounded >= min && repRounded <= max - 2) {
+        const lowTarget = repRounded + 1;
+        const highTarget = Math.min(max, repRounded + 2);
+        return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${lowTarget}${highTarget > lowTarget ? "-" + highTarget : ""} reps.`;
+      }
+
+      if (repRounded === min - 1) {
+        return `Recommendation: stay here and try to hit ${min}+ clean reps before going up.`;
+      }
+
+      if (repRounded < min - 1) {
+        if (Number.isFinite(weightNum) && weightRaw !== "") {
+          const nextWeight = Math.max(0, weightNum - jump);
+          return `Recommendation: go down to ${formatLikeOriginal(weightRaw, nextWeight)} and aim ${min}-${max} reps.`;
+        }
+        return `Recommendation: go a bit lighter and aim ${min}-${max} reps.`;
+      }
+
+      return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${min}-${max} reps.`;
+    }
+
+    function renderHero() {
+      heroDate.textContent = prettyDate(today).toUpperCase();
+      if (isRestDay) {
+        heroTitle.textContent = "Rest Day";
+        heroSub.textContent = "Recover. Eat. Sleep. Come back stronger.";
+        heroStart.textContent = "Recovery";
+        heroFinish.textContent = "Recovery";
+      } else {
+        heroTitle.textContent = todayPlan.name;
+        heroSub.textContent = "Auto-locked to today’s correct workout.";
+        heroStart.textContent = todayPlan.exercises[0].name;
+        heroFinish.textContent = todayPlan.exercises[todayPlan.exercises.length - 1].name;
       }
     }
 
     function renderSplit() {
       splitList.innerHTML = "";
-      dayNames.slice(1).concat("Sunday").forEach(day => {
+      ORDER.forEach(day => {
+        const plan = split[day];
         const item = document.createElement("div");
-        item.className = "split-item" + (day === todayDayName ? " active" : "");
+        item.className = `split-item${day === todayName ? " active" : ""}`;
         item.innerHTML = `
           <div>
-            <div style="font-weight:800;">${day}</div>
-            <div class="muted">${split[day].name}</div>
+            <div class="day-text">${day}</div>
+            <div class="day-sub">${plan.name}</div>
           </div>
-          <div class="tag">${split[day].name}</div>
+          <div class="bubble">${plan.name}</div>
         `;
         splitList.appendChild(item);
       });
     }
 
-    function populateWorkoutSelect() {
-      workoutSelect.innerHTML = allWorkoutTemplates
-        .map(w => `<option value="${w.name}">${w.name}</option>`)
-        .join("");
-
-      if (todayPlan.name !== "Rest") {
-        workoutSelect.value = todayPlan.name;
-      } else {
-        workoutSelect.value = "Push A";
+    function renderWorkout() {
+      if (isRestDay) {
+        trackerSection.classList.add("hidden");
+        recentSection.classList.add("hidden");
+        return;
       }
-    }
 
-    function renderWorkoutForm() {
-      const workout = getCurrentWorkoutTemplate();
-      const log = getOrCreateCurrentLog();
+      trackerSection.classList.remove("hidden");
+      recentSection.classList.remove("hidden");
 
-      summaryWorkout.textContent = workout.name;
-      summaryExercises.textContent = workout.exercises.length;
+      const currentLog = getCurrentLog();
+      const previousLog = findPreviousWorkoutLog(todayPlan.name, todayISO);
 
-      workoutNote.value = log.workoutNote || "";
+      metaWorkout.textContent = todayPlan.name;
+      metaExercises.textContent = String(todayPlan.exercises.length);
+      workoutNote.value = currentLog.workoutNote || "";
       exerciseList.innerHTML = "";
 
-      workout.exercises.forEach((exercise, i) => {
-        const state = log.exercises[i] || buildEmptyExerciseState(exercise);
-        const card = document.createElement("div");
-        card.className = "exercise-card";
-        card.dataset.exerciseCard = i;
-        card.dataset.unilateral = String(state.unilateral);
+      todayPlan.exercises.forEach((exercise, exerciseIndex) => {
+        const currentExerciseState = currentLog.exercises[exerciseIndex] || emptyExerciseState(exercise);
+        const previousExerciseState = previousLog?.exercises?.[exerciseIndex] || null;
+        const isUni = !!currentExerciseState.unilateral;
 
-        let setRows = "";
-        for (let s = 0; s < exercise.sets; s++) {
-          if (state.unilateral) {
-            const row = state.sets[s] || { leftWeight:"", leftReps:"", rightWeight:"", rightReps:"" };
-            setRows += `
-              <div class="set-row unilateral">
-                <div class="set-label">Set ${s + 1}</div>
-                <input data-left-weight="${i}-${s}" placeholder="L weight" value="${escapeHtml(row.leftWeight || "")}" />
-                <input data-left-reps="${i}-${s}" placeholder="L reps" value="${escapeHtml(row.leftReps || "")}" />
-                <input data-right-weight="${i}-${s}" placeholder="R weight" value="${escapeHtml(row.rightWeight || "")}" />
-                <input data-right-reps="${i}-${s}" placeholder="R reps" value="${escapeHtml(row.rightReps || "")}" />
+        let toggleButton = "";
+        if (exercise.canBeUnilateral) {
+          toggleButton = `
+            <button class="toggle-btn ${isUni ? "active" : ""}" data-toggle="${exerciseIndex}">
+              ${isUni ? "Unilateral On" : "Unilateral Off"}
+            </button>
+          `;
+        }
+
+        let setHtml = "";
+        for (let setIndex = 0; setIndex < exercise.sets; setIndex++) {
+          const currentSet = currentExerciseState.sets[setIndex] || (isUni
+            ? { leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" }
+            : { weight: "", reps: "" });
+
+          const previousSet = previousExerciseState?.sets?.[setIndex] || null;
+          const lastLine = getSetLastLine(previousSet, isUni);
+          const recLine = buildRecommendation(exercise, previousSet, isUni);
+
+          if (isUni) {
+            setHtml += `
+              <div class="set-card">
+                <div class="set-top">
+                  <div class="set-label">Set ${setIndex + 1}</div>
+                </div>
+                <div class="last-line">${escapeHtml(lastLine)}</div>
+                <div class="rec-line">${escapeHtml(recLine)}</div>
+                <div class="set-grid unilateral">
+                  <div>
+                    <div class="sub-label">Left Weight</div>
+                    <input inputmode="decimal" data-left-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 52.5" value="${escapeHtml(currentSet.leftWeight || "")}">
+                  </div>
+                  <div>
+                    <div class="sub-label">Left Reps</div>
+                    <input inputmode="numeric" data-left-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.leftReps || "")}">
+                  </div>
+                  <div>
+                    <div class="sub-label">Right Weight</div>
+                    <input inputmode="decimal" data-right-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 52.5" value="${escapeHtml(currentSet.rightWeight || "")}">
+                  </div>
+                  <div>
+                    <div class="sub-label">Right Reps</div>
+                    <input inputmode="numeric" data-right-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.rightReps || "")}">
+                  </div>
+                </div>
               </div>
             `;
           } else {
-            const row = state.sets[s] || { weight:"", reps:"" };
-            setRows += `
-              <div class="set-row">
-                <div class="set-label">Set ${s + 1}</div>
-                <input data-weight="${i}-${s}" placeholder="Weight" value="${escapeHtml(row.weight || "")}" />
-                <input data-reps="${i}-${s}" placeholder="Reps" value="${escapeHtml(row.reps || "")}" />
+            setHtml += `
+              <div class="set-card">
+                <div class="set-top">
+                  <div class="set-label">Set ${setIndex + 1}</div>
+                </div>
+                <div class="last-line">${escapeHtml(lastLine)}</div>
+                <div class="rec-line">${escapeHtml(recLine)}</div>
+                <div class="set-grid">
+                  <div>
+                    <div class="sub-label">Weight</div>
+                    <input inputmode="decimal" data-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 155 or +30" value="${escapeHtml(currentSet.weight || "")}">
+                  </div>
+                  <div>
+                    <div class="sub-label">Reps</div>
+                    <input inputmode="numeric" data-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.reps || "")}">
+                  </div>
+                </div>
               </div>
             `;
           }
         }
 
+        const card = document.createElement("div");
+        card.className = "exercise-card";
+        card.dataset.card = exerciseIndex;
+        card.dataset.unilateral = String(isUni);
         card.innerHTML = `
-          <div class="exercise-top">
+          <div class="exercise-head">
             <div>
               <div class="exercise-name">${exercise.name}</div>
-              <div class="exercise-meta">
-                <span class="chip">${exercise.sets} set${exercise.sets > 1 ? "s" : ""}</span>
-                <span class="chip">${exercise.repRange} reps</span>
+              <div class="chips">
+                <div class="chip">${exercise.sets} set${exercise.sets > 1 ? "s" : ""}</div>
+                <div class="chip">${exercise.repMin}-${exercise.repMax} reps</div>
               </div>
             </div>
-            <button class="tiny-btn ${state.unilateral ? "active" : ""}" data-toggle-unilateral="${i}">
-              ${state.unilateral ? "Unilateral On" : "Unilateral Off"}
-            </button>
+            ${toggleButton}
           </div>
-
-          <div class="set-grid">${setRows}</div>
-
-          <div class="exercise-note">
-            <label>Exercise Note</label>
-            <textarea data-note="${i}" placeholder="Notes for ${exercise.name}...">${escapeHtml(state.note || "")}</textarea>
-          </div>
+          <div class="set-list">${setHtml}</div>
+          <textarea data-note="${exerciseIndex}" placeholder="Exercise notes...">${escapeHtml(currentExerciseState.note || "")}</textarea>
         `;
 
         exerciseList.appendChild(card);
       });
 
-      updateSummary();
+      updateProgress();
     }
 
-    function updateSummary() {
-      const workout = getCurrentWorkoutTemplate();
-      const log = collectCurrentFormState();
-
+    function updateProgress() {
+      if (isRestDay) return;
+      const state = collectFormState();
       let totalSets = 0;
       let completedSets = 0;
 
-      log.exercises.forEach((exerciseState, i) => {
-        totalSets += workout.exercises[i].sets;
+      todayPlan.exercises.forEach((exercise, exerciseIndex) => {
+        totalSets += exercise.sets;
+        const exerciseState = state.exercises[exerciseIndex];
         exerciseState.sets.forEach(set => {
           if (exerciseState.unilateral) {
-            if ((set.leftReps || "").trim() !== "" && (set.rightReps || "").trim() !== "") {
-              completedSets++;
-            }
+            const leftDone = String(set.leftReps || "").trim() !== "";
+            const rightDone = String(set.rightReps || "").trim() !== "";
+            if (leftDone && rightDone) completedSets++;
           } else {
-            if ((set.reps || "").trim() !== "") {
-              completedSets++;
-            }
+            if (String(set.reps || "").trim() !== "") completedSets++;
           }
         });
       });
 
-      summarySets.textContent = `${completedSets} / ${totalSets}`;
+      metaSets.textContent = `${completedSets} / ${totalSets}`;
       const percent = totalSets ? Math.round((completedSets / totalSets) * 100) : 0;
       progressFill.style.width = percent + "%";
-      progressText.textContent = `Progress • ${percent}% done`;
+      progressLabel.textContent = `Progress • ${percent}% complete`;
+      writeCurrentDraft(state);
     }
 
-    function renderRecentSessions() {
-      const data = getStorage();
-      const entries = Object.entries(data)
-        .filter(([, value]) => value && value.updatedAt)
-        .sort((a, b) => new Date(b[1].updatedAt) - new Date(a[1].updatedAt))
+    function renderRecent() {
+      if (isRestDay) return;
+      const store = loadStore();
+      const entries = Object.entries(store)
+        .map(([key, value]) => {
+          const [date, workoutName] = key.split("|");
+          return { date, workoutName, value };
+        })
+        .filter(item => item.value?.updatedAt)
+        .sort((a, b) => new Date(b.value.updatedAt) - new Date(a.value.updatedAt))
         .slice(0, 8);
 
       recentList.innerHTML = "";
 
       if (!entries.length) {
-        recentList.innerHTML = `<div class="recent-item"><strong>No saved sessions yet.</strong><div class="muted">Your recent logs will show up here.</div></div>`;
+        recentList.innerHTML = `
+          <div class="recent-item">
+            <div class="recent-name">No saved sessions yet.</div>
+            <div class="muted">Finish a workout and hit save — it’ll show up here.</div>
+          </div>
+        `;
         return;
       }
 
-      entries.forEach(([key, value]) => {
-        const [date, workoutName] = key.split("|");
-        let totalSets = 0;
-        let completedSets = 0;
-
-        value.exercises.forEach(ex => {
-          totalSets += ex.sets.length;
+      entries.forEach(item => {
+        let total = 0;
+        let done = 0;
+        item.value.exercises.forEach(ex => {
+          total += ex.sets.length;
           ex.sets.forEach(set => {
             if (ex.unilateral) {
-              if ((set.leftReps || "").trim() !== "" && (set.rightReps || "").trim() !== "") {
-                completedSets++;
-              }
+              if (String(set.leftReps || "").trim() !== "" && String(set.rightReps || "").trim() !== "") done++;
             } else {
-              if ((set.reps || "").trim() !== "") {
-                completedSets++;
-              }
+              if (String(set.reps || "").trim() !== "") done++;
             }
           });
         });
 
-        const item = document.createElement("div");
-        item.className = "recent-item";
-        item.innerHTML = `
-          <strong>${workoutName}</strong>
-          <div class="muted">${date}</div>
-          <div class="muted">${completedSets}/${totalSets} sets filled</div>
+        const div = document.createElement("div");
+        div.className = "recent-item";
+        div.innerHTML = `
+          <div class="recent-top">
+            <div>
+              <div class="recent-name">${item.workoutName}</div>
+              <div class="muted">${item.date}</div>
+            </div>
+            <div class="bubble">${done}/${total}</div>
+          </div>
         `;
-        recentList.appendChild(item);
+        recentList.appendChild(div);
       });
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    }
-
     function toggleUnilateral(exerciseIndex) {
-      const workout = getCurrentWorkoutTemplate();
-      const data = getStorage();
-      const key = getLogKey(logDate.value, workout.name);
-      const current = getOrCreateCurrentLog();
-      const currentState = current.exercises[exerciseIndex];
-      const newMode = !currentState.unilateral;
+      const store = loadStore();
+      const log = getCurrentLog();
+      const exercise = todayPlan.exercises[exerciseIndex];
+      if (!exercise.canBeUnilateral) return;
 
-      current.exercises[exerciseIndex].unilateral = newMode;
-      current.exercises[exerciseIndex].sets = [];
+      const currentState = log.exercises[exerciseIndex];
+      const nextUni = !currentState.unilateral;
 
-      for (let s = 0; s < workout.exercises[exerciseIndex].sets; s++) {
-        if (newMode) {
-          current.exercises[exerciseIndex].sets.push({
-            leftWeight: "",
-            leftReps: "",
-            rightWeight: "",
-            rightReps: ""
-          });
+      currentState.unilateral = nextUni;
+      currentState.sets = [];
+
+      for (let i = 0; i < exercise.sets; i++) {
+        if (nextUni) {
+          currentState.sets.push({ leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" });
         } else {
-          current.exercises[exerciseIndex].sets.push({
-            weight: "",
-            reps: ""
-          });
+          currentState.sets.push({ weight: "", reps: "" });
         }
       }
 
-      data[key] = current;
-      setStorage(data);
-      renderWorkoutForm();
-      saveStatus.textContent = "Updated unilateral mode.";
+      store[currentKey()] = log;
+      saveStore(store);
+      renderWorkout();
+      saveStatus.textContent = "Changed unilateral mode.";
     }
 
     function init() {
       renderHero();
       renderSplit();
-      populateWorkoutSelect();
-      logDate.value = formatDateISO(today);
-      renderWorkoutForm();
-      renderRecentSessions();
 
-      workoutSelect.addEventListener("change", () => {
-        renderWorkoutForm();
-        saveStatus.textContent = "Switched workout.";
-      });
+      if (!isRestDay) {
+        renderWorkout();
+        renderRecent();
 
-      logDate.addEventListener("change", () => {
-        renderWorkoutForm();
-        saveStatus.textContent = "Date changed.";
-      });
+        exerciseList.addEventListener("input", () => {
+          updateProgress();
+          saveStatus.textContent = "Draft updated.";
+        });
 
-      exerciseList.addEventListener("input", () => {
-        updateSummary();
-      });
+        exerciseList.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-toggle]");
+          if (!btn) return;
+          toggleUnilateral(Number(btn.dataset.toggle));
+        });
 
-      exerciseList.addEventListener("click", (e) => {
-        const btn = e.target.closest("[data-toggle-unilateral]");
-        if (!btn) return;
-        const idx = Number(btn.dataset.toggleUnilateral);
-        toggleUnilateral(idx);
-      });
+        workoutNote.addEventListener("input", () => {
+          updateProgress();
+          saveStatus.textContent = "Draft updated.";
+        });
 
-      workoutNote.addEventListener("input", updateSummary);
-
-      saveBtn.addEventListener("click", saveCurrentLog);
-
-      clearBtn.addEventListener("click", () => {
-        if (confirm("Clear this saved log for the selected date/workout?")) {
-          clearCurrentLog();
-        }
-      });
+        saveBtn.addEventListener("click", () => saveCurrentLog(true));
+        clearBtn.addEventListener("click", () => {
+          if (confirm("Clear today’s workout log?")) clearCurrentLog();
+        });
+      }
     }
 
     init();
