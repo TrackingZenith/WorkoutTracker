@@ -565,649 +565,759 @@
     <div class="footer-note">Warm-up sets don’t count. Everything saves locally on this device.</div>
   </div>
 
-  <script>
-    const split = {
-      Monday: {
-        name: "Push A",
-        exercises: [
-          { name: "Smith incline press", sets: 3, repMin: 6, repMax: 10 },
-          { name: "Cable fly", sets: 1, repMin: 10, repMax: 15 },
-          { name: "Cable lateral raise", sets: 2, repMin: 12, repMax: 20, canBeUnilateral: true, defaultUnilateral: false },
-          { name: "Skullcrushers", sets: 2, repMin: 8, repMax: 12 }
-        ]
-      },
-      Tuesday: {
-        name: "Pull A",
-        exercises: [
-          { name: "Wide-grip pullup", sets: 2, repMin: 5, repMax: 8 },
-          { name: "Neutral-grip weighted pullup", sets: 2, repMin: 5, repMax: 8 },
-          { name: "1-arm kneeling cable lat pulldown", sets: 2, repMin: 8, repMax: 12, canBeUnilateral: true, defaultUnilateral: true },
-          { name: "Incline DB curl", sets: 2, repMin: 8, repMax: 12 }
-        ]
-      },
-      Wednesday: {
-        name: "Legs",
-        exercises: [
-          { name: "Smith squat", sets: 3, repMin: 6, repMax: 10 },
-          { name: "Machine leg extension", sets: 2, repMin: 10, repMax: 15 },
-          { name: "Hamstring curl", sets: 2, repMin: 10, repMax: 15 },
-          { name: "Calf raise", sets: 1, repMin: 10, repMax: 20 }
-        ]
-      },
-      Thursday: { name: "Rest", exercises: [] },
-      Friday: {
-        name: "Push B",
-        exercises: [
-          { name: "Flat smith press", sets: 3, repMin: 6, repMax: 10 },
-          { name: "Cable fly", sets: 1, repMin: 10, repMax: 15 },
-          { name: "Cable lateral raise", sets: 2, repMin: 12, repMax: 20, canBeUnilateral: true, defaultUnilateral: false },
-          { name: "Skullcrushers", sets: 2, repMin: 10, repMax: 15 }
-        ]
-      },
-      Saturday: {
-        name: "Pull B",
-        exercises: [
-          { name: "Lat pulldown", sets: 2, repMin: 8, repMax: 12 },
-          { name: "Seated cable row", sets: 3, repMin: 8, repMax: 12 },
-          { name: "Preacher curl", sets: 2, repMin: 10, repMax: 15 },
-          { name: "Rear delt fly", sets: 1, repMin: 12, repMax: 20 }
-        ]
-      },
-      Sunday: { name: "Rest", exercises: [] }
+<script>
+  const split = {
+    Monday: {
+      name: "Push A",
+      exercises: [
+        { name: "Smith incline press", sets: 3, repMin: 6, repMax: 10 },
+        { name: "Cable fly", sets: 1, repMin: 10, repMax: 15 },
+        { name: "Cable lateral raise", sets: 2, repMin: 12, repMax: 20, canBeUnilateral: true, defaultUnilateral: false },
+        { name: "Skullcrushers", sets: 2, repMin: 8, repMax: 12 }
+      ]
+    },
+    Tuesday: {
+      name: "Pull A",
+      exercises: [
+        { name: "Wide-grip pullup", sets: 2, repMin: 5, repMax: 8 },
+        { name: "Neutral-grip weighted pullup", sets: 2, repMin: 5, repMax: 8 },
+        { name: "1-arm kneeling cable lat pulldown", sets: 2, repMin: 8, repMax: 12, canBeUnilateral: true, defaultUnilateral: true },
+        { name: "Incline DB curl", sets: 2, repMin: 8, repMax: 12 }
+      ]
+    },
+    Wednesday: {
+      name: "Legs",
+      exercises: [
+        { name: "Smith squat", sets: 3, repMin: 6, repMax: 10 },
+        { name: "Machine leg extension", sets: 2, repMin: 10, repMax: 15 },
+        { name: "Hamstring curl", sets: 2, repMin: 10, repMax: 15 },
+        { name: "Calf raise", sets: 1, repMin: 10, repMax: 20 }
+      ]
+    },
+    Thursday: { name: "Rest", exercises: [] },
+    Friday: {
+      name: "Push B",
+      exercises: [
+        { name: "Flat smith press", sets: 3, repMin: 6, repMax: 10 },
+        { name: "Cable fly", sets: 1, repMin: 10, repMax: 15 },
+        { name: "Cable lateral raise", sets: 2, repMin: 12, repMax: 20, canBeUnilateral: true, defaultUnilateral: false },
+        { name: "Skullcrushers", sets: 2, repMin: 10, repMax: 15 }
+      ]
+    },
+    Saturday: {
+      name: "Pull B",
+      exercises: [
+        { name: "Lat pulldown", sets: 2, repMin: 8, repMax: 12 },
+        { name: "Seated cable row", sets: 3, repMin: 8, repMax: 12 },
+        { name: "Preacher curl", sets: 2, repMin: 10, repMax: 15 },
+        { name: "Rear delt fly", sets: 1, repMin: 12, repMax: 20 }
+      ]
+    },
+    Sunday: { name: "Rest", exercises: [] }
+  };
+
+  const ORDER = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+  const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const STORAGE_KEY = "workoutTrackerV6";
+
+  const today = new Date();
+  const todayName = DAY_NAMES[today.getDay()];
+  const todayISO = formatISO(today);
+  const todayPlan = split[todayName];
+  const isRestDay = todayPlan.name === "Rest";
+
+  const heroDate = document.getElementById("heroDate");
+  const heroTitle = document.getElementById("heroTitle");
+  const heroSub = document.getElementById("heroSub");
+  const heroStart = document.getElementById("heroStart");
+  const heroFinish = document.getElementById("heroFinish");
+  const splitList = document.getElementById("splitList");
+  const trackerSection = document.getElementById("trackerSection");
+  const recentSection = document.getElementById("recentSection");
+  const metaWorkout = document.getElementById("metaWorkout");
+  const metaExercises = document.getElementById("metaExercises");
+  const metaSets = document.getElementById("metaSets");
+  const progressLabel = document.getElementById("progressLabel");
+  const progressFill = document.getElementById("progressFill");
+  const exerciseList = document.getElementById("exerciseList");
+  const workoutNote = document.getElementById("workoutNote");
+  const saveBtn = document.getElementById("saveBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const saveStatus = document.getElementById("saveStatus");
+  const recentList = document.getElementById("recentList");
+
+  function formatISO(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  function prettyDate(date) {
+    return date.toLocaleDateString(undefined, {
+      weekday: "long",
+      month: "short",
+      day: "numeric"
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function loadStore() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveStore(store) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  }
+
+  function getPlanByName(name) {
+    return Object.values(split).find(plan => plan.name === name) || null;
+  }
+
+  function currentKey() {
+    return `${todayISO}|${todayPlan.name}`;
+  }
+
+  function emptyExerciseState(exercise) {
+    const unilateral = !!exercise.defaultUnilateral;
+    const sets = [];
+
+    for (let i = 0; i < exercise.sets; i++) {
+      if (unilateral) {
+        sets.push({ leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" });
+      } else {
+        sets.push({ weight: "", reps: "" });
+      }
+    }
+
+    return { unilateral, note: "", sets };
+  }
+
+  function emptyLog(plan, dateValue = todayISO) {
+    return {
+      workoutName: plan.name,
+      date: dateValue,
+      updatedAt: "",
+      workoutNote: "",
+      exercises: plan.exercises.map(ex => emptyExerciseState(ex))
+    };
+  }
+
+  function normalizeLog(plan, rawLog, dateValue = todayISO) {
+    const base = emptyLog(plan, dateValue);
+    if (!rawLog || typeof rawLog !== "object") return base;
+
+    const normalized = {
+      workoutName: plan.name,
+      date: rawLog.date || dateValue,
+      updatedAt: rawLog.updatedAt || "",
+      workoutNote: rawLog.workoutNote || "",
+      exercises: []
     };
 
-    const ORDER = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-    const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const STORAGE_KEY = "workoutTrackerV5";
+    plan.exercises.forEach((exercise, exerciseIndex) => {
+      const prevExercise = rawLog.exercises?.[exerciseIndex];
+      const unilateral = exercise.canBeUnilateral
+        ? (typeof prevExercise?.unilateral === "boolean" ? prevExercise.unilateral : !!exercise.defaultUnilateral)
+        : false;
 
-    const today = new Date();
-    const todayName = DAY_NAMES[today.getDay()];
-    const todayISO = formatISO(today);
-    const todayPlan = split[todayName];
-    const isRestDay = todayPlan.name === "Rest";
-
-    const heroDate = document.getElementById("heroDate");
-    const heroTitle = document.getElementById("heroTitle");
-    const heroSub = document.getElementById("heroSub");
-    const heroStart = document.getElementById("heroStart");
-    const heroFinish = document.getElementById("heroFinish");
-    const splitList = document.getElementById("splitList");
-    const trackerSection = document.getElementById("trackerSection");
-    const recentSection = document.getElementById("recentSection");
-    const metaWorkout = document.getElementById("metaWorkout");
-    const metaExercises = document.getElementById("metaExercises");
-    const metaSets = document.getElementById("metaSets");
-    const progressLabel = document.getElementById("progressLabel");
-    const progressFill = document.getElementById("progressFill");
-    const exerciseList = document.getElementById("exerciseList");
-    const workoutNote = document.getElementById("workoutNote");
-    const saveBtn = document.getElementById("saveBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const saveStatus = document.getElementById("saveStatus");
-    const recentList = document.getElementById("recentList");
-
-    function formatISO(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const d = String(date.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
-    }
-
-    function prettyDate(date) {
-      return date.toLocaleDateString(undefined, {
-        weekday: "long",
-        month: "short",
-        day: "numeric"
-      });
-    }
-
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    }
-
-    function loadStore() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-      } catch {
-        return {};
-      }
-    }
-
-    function saveStore(store) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-    }
-
-    function currentKey() {
-      return `${todayISO}|${todayPlan.name}`;
-    }
-
-    function emptyExerciseState(exercise) {
-      const unilateral = !!exercise.defaultUnilateral;
       const sets = [];
-      for (let i = 0; i < exercise.sets; i++) {
+      for (let setIndex = 0; setIndex < exercise.sets; setIndex++) {
+        const prevSet = prevExercise?.sets?.[setIndex] || {};
+
         if (unilateral) {
-          sets.push({ leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" });
+          sets.push({
+            leftWeight: prevSet.leftWeight || prevSet.weight || "",
+            leftReps: prevSet.leftReps || prevSet.reps || "",
+            rightWeight: prevSet.rightWeight || prevSet.weight || "",
+            rightReps: prevSet.rightReps || prevSet.reps || ""
+          });
         } else {
-          sets.push({ weight: "", reps: "" });
+          sets.push({
+            weight: prevSet.weight || prevSet.leftWeight || prevSet.rightWeight || "",
+            reps: prevSet.reps || prevSet.leftReps || prevSet.rightReps || ""
+          });
         }
       }
-      return { unilateral, note: "", sets };
-    }
 
-    function emptyLog(plan) {
-      return {
-        workoutName: plan.name,
-        date: todayISO,
-        updatedAt: "",
-        workoutNote: "",
-        exercises: plan.exercises.map(ex => emptyExerciseState(ex))
-      };
-    }
-
-    function getCurrentLog() {
-      const store = loadStore();
-      return store[currentKey()] || emptyLog(todayPlan);
-    }
-
-    function writeCurrentDraft(log) {
-      const store = loadStore();
-      const oldSavedTime = store[currentKey()]?.updatedAt || "";
-      log.updatedAt = oldSavedTime;
-      store[currentKey()] = log;
-      saveStore(store);
-    }
-
-    function saveCurrentLog(finalSave = false) {
-      if (isRestDay) return;
-      const store = loadStore();
-      const log = collectFormState();
-      if (finalSave) {
-        log.updatedAt = new Date().toISOString();
-      } else {
-        log.updatedAt = store[currentKey()]?.updatedAt || "";
-      }
-      store[currentKey()] = log;
-      saveStore(store);
-
-      if (finalSave) {
-        const t = new Date(log.updatedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-        saveStatus.textContent = `Saved • ${t}`;
-      } else {
-        saveStatus.textContent = "Draft updated.";
-      }
-
-      renderRecent();
-      updateProgress();
-    }
-
-    function clearCurrentLog() {
-      const store = loadStore();
-      delete store[currentKey()];
-      saveStore(store);
-      renderWorkout();
-      renderRecent();
-      saveStatus.textContent = "Cleared today’s workout.";
-    }
-
-    function collectFormState() {
-      const log = {
-        workoutName: todayPlan.name,
-        date: todayISO,
-        updatedAt: "",
-        workoutNote: workoutNote.value,
-        exercises: []
-      };
-
-      todayPlan.exercises.forEach((exercise, exerciseIndex) => {
-        const card = document.querySelector(`[data-card="${exerciseIndex}"]`);
-        const isUni = card?.dataset.unilateral === "true";
-        const noteValue = card?.querySelector(`[data-note="${exerciseIndex}"]`)?.value || "";
-        const sets = [];
-
-        for (let setIndex = 0; setIndex < exercise.sets; setIndex++) {
-          if (isUni) {
-            sets.push({
-              leftWeight: card.querySelector(`[data-left-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
-              leftReps: card.querySelector(`[data-left-reps="${exerciseIndex}-${setIndex}"]`)?.value || "",
-              rightWeight: card.querySelector(`[data-right-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
-              rightReps: card.querySelector(`[data-right-reps="${exerciseIndex}-${setIndex}"]`)?.value || ""
-            });
-          } else {
-            sets.push({
-              weight: card.querySelector(`[data-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
-              reps: card.querySelector(`[data-reps="${exerciseIndex}-${setIndex}"]`)?.value || ""
-            });
-          }
-        }
-
-        log.exercises.push({
-          unilateral: isUni,
-          note: noteValue,
-          sets
-        });
+      normalized.exercises.push({
+        unilateral,
+        note: prevExercise?.note || "",
+        sets
       });
+    });
 
-      return log;
+    return normalized;
+  }
+
+  function getCurrentLog() {
+    const store = loadStore();
+    return normalizeLog(todayPlan, store[currentKey()], todayISO);
+  }
+
+  function writeCurrentDraft(log) {
+    const store = loadStore();
+    const previousSavedTime = store[currentKey()]?.updatedAt || "";
+    const normalized = normalizeLog(todayPlan, log, todayISO);
+    normalized.updatedAt = previousSavedTime;
+    store[currentKey()] = normalized;
+    saveStore(store);
+  }
+
+  function saveCurrentLog(finalSave = false) {
+    if (isRestDay) return;
+
+    const store = loadStore();
+    const log = normalizeLog(todayPlan, collectFormState(), todayISO);
+
+    if (finalSave) {
+      log.updatedAt = new Date().toISOString();
+    } else {
+      log.updatedAt = store[currentKey()]?.updatedAt || "";
     }
 
-    function findPreviousWorkoutLog(workoutName, beforeDate) {
-      const store = loadStore();
-      const candidates = Object.entries(store)
-        .map(([key, value]) => {
-          const [date, workout] = key.split("|");
-          return { key, date, workout, value };
-        })
-        .filter(item => item.workout === workoutName && item.date < beforeDate)
-        .sort((a, b) => b.date.localeCompare(a.date));
+    store[currentKey()] = log;
+    saveStore(store);
 
-      return candidates.length ? candidates[0].value : null;
+    if (finalSave) {
+      const t = new Date(log.updatedAt).toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+      });
+      saveStatus.textContent = `Saved • ${t}`;
+    } else {
+      saveStatus.textContent = "Draft updated.";
     }
 
-    function parseNumber(value) {
-      if (value === null || value === undefined) return null;
-      const cleaned = String(value).trim().replace(/[^\d.+-]/g, "");
-      if (!cleaned) return null;
-      const num = Number(cleaned);
-      return Number.isFinite(num) ? num : null;
-    }
+    renderRecent();
+    updateProgress(false);
+  }
 
-    function formatNumber(num) {
-      if (!Number.isFinite(num)) return "";
-      return Number.isInteger(num) ? String(num) : String(Math.round(num * 100) / 100);
-    }
+  function clearCurrentLog() {
+    const store = loadStore();
+    delete store[currentKey()];
+    saveStore(store);
+    renderWorkout();
+    renderRecent();
+    saveStatus.textContent = "Cleared today’s workout.";
+  }
 
-    function suggestedJump(exerciseName, weight) {
-      const name = exerciseName.toLowerCase();
-      if (name.includes("smith") || name.includes("squat")) return 10;
-      if (name.includes("pullup") || name.includes("pulldown") || name.includes("row")) return 5;
-      if (name.includes("skull") || name.includes("preacher") || name.includes("curl")) return weight >= 30 ? 5 : 2.5;
-      if (name.includes("lateral") || name.includes("fly")) return 2.5;
-      if (name.includes("extension") || name.includes("hamstring") || name.includes("calf")) return 5;
-      return weight >= 50 ? 5 : 2.5;
-    }
+  function collectFormState() {
+    const log = {
+      workoutName: todayPlan.name,
+      date: todayISO,
+      updatedAt: "",
+      workoutNote: workoutNote.value,
+      exercises: []
+    };
 
-    function formatLikeOriginal(original, newNumber) {
-      const str = String(original ?? "").trim();
-      const prefix = str.startsWith("+") ? "+" : "";
-      return `${prefix}${formatNumber(newNumber)}`;
-    }
+    todayPlan.exercises.forEach((exercise, exerciseIndex) => {
+      const card = document.querySelector(`[data-card="${exerciseIndex}"]`);
+      const isUni = card?.dataset.unilateral === "true";
+      const noteValue = card?.querySelector(`[data-note="${exerciseIndex}"]`)?.value || "";
+      const sets = [];
 
-    function average(arr) {
-      const nums = arr.filter(v => Number.isFinite(v));
-      if (!nums.length) return null;
-      return nums.reduce((a,b) => a + b, 0) / nums.length;
-    }
-
-    function getSetLastLine(prevSet, unilateral) {
-      if (!prevSet) return "Last: —";
-      if (unilateral) {
-        const hasAny = [prevSet.leftWeight, prevSet.leftReps, prevSet.rightWeight, prevSet.rightReps].some(v => String(v || "").trim() !== "");
-        if (!hasAny) return "Last: —";
-        return `Last: L ${prevSet.leftWeight || "?"} × ${prevSet.leftReps || "?"} • R ${prevSet.rightWeight || "?"} × ${prevSet.rightReps || "?"}`;
+      for (let setIndex = 0; setIndex < exercise.sets; setIndex++) {
+        if (isUni) {
+          sets.push({
+            leftWeight: card?.querySelector(`[data-left-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
+            leftReps: card?.querySelector(`[data-left-reps="${exerciseIndex}-${setIndex}"]`)?.value || "",
+            rightWeight: card?.querySelector(`[data-right-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
+            rightReps: card?.querySelector(`[data-right-reps="${exerciseIndex}-${setIndex}"]`)?.value || ""
+          });
+        } else {
+          sets.push({
+            weight: card?.querySelector(`[data-weight="${exerciseIndex}-${setIndex}"]`)?.value || "",
+            reps: card?.querySelector(`[data-reps="${exerciseIndex}-${setIndex}"]`)?.value || ""
+          });
+        }
       }
-      const hasAny = [prevSet.weight, prevSet.reps].some(v => String(v || "").trim() !== "");
+
+      log.exercises.push({
+        unilateral: isUni,
+        note: noteValue,
+        sets
+      });
+    });
+
+    return log;
+  }
+
+  function findPreviousWorkoutLog(workoutName, beforeDate) {
+    const store = loadStore();
+    const plan = getPlanByName(workoutName);
+
+    const candidates = Object.entries(store)
+      .map(([key, value]) => {
+        const [date, workout] = key.split("|");
+        return { date, workout, value };
+      })
+      .filter(item =>
+        item.workout === workoutName &&
+        item.date < beforeDate &&
+        item.value?.updatedAt
+      )
+      .sort((a, b) => b.date.localeCompare(a.date));
+
+    if (!candidates.length || !plan) return null;
+    return normalizeLog(plan, candidates[0].value, candidates[0].date);
+  }
+
+  function parseNumber(value) {
+    if (value === null || value === undefined) return null;
+    const cleaned = String(value).trim().replace(/[^\d.+-]/g, "");
+    if (!cleaned) return null;
+    const num = Number(cleaned);
+    return Number.isFinite(num) ? num : null;
+  }
+
+  function formatNumber(num) {
+    if (!Number.isFinite(num)) return "";
+    return Number.isInteger(num) ? String(num) : String(Math.round(num * 100) / 100);
+  }
+
+  function suggestedJump(exerciseName, weight) {
+    const name = exerciseName.toLowerCase();
+    if (name.includes("smith") || name.includes("squat")) return 10;
+    if (name.includes("pullup") || name.includes("pulldown") || name.includes("row")) return 5;
+    if (name.includes("skull") || name.includes("preacher") || name.includes("curl")) return weight >= 30 ? 5 : 2.5;
+    if (name.includes("lateral") || name.includes("fly")) return 2.5;
+    if (name.includes("extension") || name.includes("hamstring") || name.includes("calf")) return 5;
+    return weight >= 50 ? 5 : 2.5;
+  }
+
+  function formatLikeOriginal(original, newNumber) {
+    const str = String(original ?? "").trim();
+    const prefix = str.startsWith("+") ? "+" : "";
+    return `${prefix}${formatNumber(newNumber)}`;
+  }
+
+  function average(arr) {
+    const nums = arr.filter(v => Number.isFinite(v));
+    if (!nums.length) return null;
+    return nums.reduce((a, b) => a + b, 0) / nums.length;
+  }
+
+  function getSetLastLine(prevSet, unilateral) {
+    if (!prevSet) return "Last: —";
+
+    if (unilateral) {
+      const hasAny = [prevSet.leftWeight, prevSet.leftReps, prevSet.rightWeight, prevSet.rightReps]
+        .some(v => String(v || "").trim() !== "");
       if (!hasAny) return "Last: —";
-      return `Last: ${prevSet.weight || "?"} × ${prevSet.reps || "?"}`;
+      return `Last: L ${prevSet.leftWeight || "?"} × ${prevSet.leftReps || "?"} • R ${prevSet.rightWeight || "?"} × ${prevSet.rightReps || "?"}`;
     }
 
-    function buildRecommendation(exercise, prevSet, unilateral) {
-      const min = exercise.repMin;
-      const max = exercise.repMax;
+    const hasAny = [prevSet.weight, prevSet.reps].some(v => String(v || "").trim() !== "");
+    if (!hasAny) return "Last: —";
+    return `Last: ${prevSet.weight || "?"} × ${prevSet.reps || "?"}`;
+  }
 
-      if (!prevSet) {
-        return `Recommendation: first log — pick a controllable weight and aim ${min}-${max} reps.`;
-      }
+  function buildRecommendation(exercise, prevSet, unilateral) {
+    const min = exercise.repMin;
+    const max = exercise.repMax;
 
-      let repValue = null;
-      let weightNum = null;
-      let weightRaw = "";
-
-      if (unilateral) {
-        const lRep = parseNumber(prevSet.leftReps);
-        const rRep = parseNumber(prevSet.rightReps);
-        const lWeight = parseNumber(prevSet.leftWeight);
-        const rWeight = parseNumber(prevSet.rightWeight);
-        repValue = average([lRep, rRep]);
-        weightNum = average([lWeight, rWeight]);
-        weightRaw = prevSet.leftWeight || prevSet.rightWeight || "";
-      } else {
-        repValue = parseNumber(prevSet.reps);
-        weightNum = parseNumber(prevSet.weight);
-        weightRaw = prevSet.weight || "";
-      }
-
-      if (!Number.isFinite(repValue)) {
-        return `Recommendation: no last reps logged — aim ${min}-${max} reps with clean form.`;
-      }
-
-      const repRounded = Math.round(repValue);
-      const jump = Number.isFinite(weightNum) ? suggestedJump(exercise.name, weightNum) : null;
-
-      if (repRounded >= max) {
-        if (Number.isFinite(weightNum) && weightRaw !== "") {
-          const nextWeight = Math.max(0, weightNum + jump);
-          return `Recommendation: go up to ${formatLikeOriginal(weightRaw, nextWeight)} and aim ${min}-${Math.min(max - 1, min + 2)} reps.`;
-        }
-        return `Recommendation: go slightly heavier next time and aim ${min}-${Math.min(max - 1, min + 2)} reps.`;
-      }
-
-      if (repRounded === max - 1) {
-        return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${max} reps.`;
-      }
-
-      if (repRounded >= min && repRounded <= max - 2) {
-        const lowTarget = repRounded + 1;
-        const highTarget = Math.min(max, repRounded + 2);
-        return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${lowTarget}${highTarget > lowTarget ? "-" + highTarget : ""} reps.`;
-      }
-
-      if (repRounded === min - 1) {
-        return `Recommendation: stay here and try to hit ${min}+ clean reps before going up.`;
-      }
-
-      if (repRounded < min - 1) {
-        if (Number.isFinite(weightNum) && weightRaw !== "") {
-          const nextWeight = Math.max(0, weightNum - jump);
-          return `Recommendation: go down to ${formatLikeOriginal(weightRaw, nextWeight)} and aim ${min}-${max} reps.`;
-        }
-        return `Recommendation: go a bit lighter and aim ${min}-${max} reps.`;
-      }
-
-      return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${min}-${max} reps.`;
+    if (!prevSet) {
+      return `Recommendation: first log — pick a controllable weight and aim ${min}-${max} reps.`;
     }
 
-    function renderHero() {
-      heroDate.textContent = prettyDate(today).toUpperCase();
-      if (isRestDay) {
-        heroTitle.textContent = "Rest Day";
-        heroSub.textContent = "Recover. Eat. Sleep. Come back stronger.";
-        heroStart.textContent = "Recovery";
-        heroFinish.textContent = "Recovery";
-      } else {
-        heroTitle.textContent = todayPlan.name;
-        heroSub.textContent = "Auto-locked to today’s correct workout.";
-        heroStart.textContent = todayPlan.exercises[0].name;
-        heroFinish.textContent = todayPlan.exercises[todayPlan.exercises.length - 1].name;
-      }
+    let repValue = null;
+    let weightNum = null;
+    let weightRaw = "";
+
+    if (unilateral) {
+      const lRep = parseNumber(prevSet.leftReps);
+      const rRep = parseNumber(prevSet.rightReps);
+      const lWeight = parseNumber(prevSet.leftWeight);
+      const rWeight = parseNumber(prevSet.rightWeight);
+      repValue = average([lRep, rRep]);
+      weightNum = average([lWeight, rWeight]);
+      weightRaw = prevSet.leftWeight || prevSet.rightWeight || "";
+    } else {
+      repValue = parseNumber(prevSet.reps);
+      weightNum = parseNumber(prevSet.weight);
+      weightRaw = prevSet.weight || "";
     }
 
-    function renderSplit() {
-      splitList.innerHTML = "";
-      ORDER.forEach(day => {
-        const plan = split[day];
-        const item = document.createElement("div");
-        item.className = `split-item${day === todayName ? " active" : ""}`;
-        item.innerHTML = `
-          <div>
-            <div class="day-text">${day}</div>
-            <div class="day-sub">${plan.name}</div>
-          </div>
-          <div class="bubble">${plan.name}</div>
+    if (!Number.isFinite(repValue)) {
+      return `Recommendation: no last reps logged — aim ${min}-${max} reps with clean form.`;
+    }
+
+    const repRounded = Math.round(repValue);
+    const jump = Number.isFinite(weightNum) ? suggestedJump(exercise.name, weightNum) : null;
+
+    if (repRounded >= max) {
+      if (Number.isFinite(weightNum) && weightRaw !== "") {
+        const nextWeight = Math.max(0, weightNum + jump);
+        return `Recommendation: go up to ${formatLikeOriginal(weightRaw, nextWeight)} and aim ${min}-${Math.min(max - 1, min + 2)} reps.`;
+      }
+      return `Recommendation: go slightly heavier next time and aim ${min}-${Math.min(max - 1, min + 2)} reps.`;
+    }
+
+    if (repRounded === max - 1) {
+      return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${max} reps.`;
+    }
+
+    if (repRounded >= min && repRounded <= max - 2) {
+      const lowTarget = repRounded + 1;
+      const highTarget = Math.min(max, repRounded + 2);
+      return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${lowTarget}${highTarget > lowTarget ? "-" + highTarget : ""} reps.`;
+    }
+
+    if (repRounded === min - 1) {
+      return `Recommendation: stay here and try to hit ${min}+ clean reps before going up.`;
+    }
+
+    if (repRounded < min - 1) {
+      if (Number.isFinite(weightNum) && weightRaw !== "") {
+        const nextWeight = Math.max(0, weightNum - jump);
+        return `Recommendation: go down to ${formatLikeOriginal(weightRaw, nextWeight)} and aim ${min}-${max} reps.`;
+      }
+      return `Recommendation: go a bit lighter and aim ${min}-${max} reps.`;
+    }
+
+    return `Recommendation: stay at ${weightRaw || "this weight"} and aim ${min}-${max} reps.`;
+  }
+
+  function renderHero() {
+    heroDate.textContent = prettyDate(today).toUpperCase();
+
+    if (isRestDay) {
+      heroTitle.textContent = "Rest Day";
+      heroSub.textContent = "Recover. Eat. Sleep. Come back stronger.";
+      heroStart.textContent = "Recovery";
+      heroFinish.textContent = "Recovery";
+    } else {
+      heroTitle.textContent = todayPlan.name;
+      heroSub.textContent = "Auto-locked to today’s correct workout.";
+      heroStart.textContent = todayPlan.exercises[0].name;
+      heroFinish.textContent = todayPlan.exercises[todayPlan.exercises.length - 1].name;
+    }
+  }
+
+  function renderSplit() {
+    splitList.innerHTML = "";
+
+    ORDER.forEach(day => {
+      const plan = split[day];
+      const item = document.createElement("div");
+      item.className = `split-item${day === todayName ? " active" : ""}`;
+      item.innerHTML = `
+        <div>
+          <div class="day-text">${day}</div>
+          <div class="day-sub">${plan.name}</div>
+        </div>
+        <div class="bubble">${plan.name}</div>
+      `;
+      splitList.appendChild(item);
+    });
+  }
+
+  function renderWorkout() {
+    if (isRestDay) {
+      trackerSection.classList.add("hidden");
+      recentSection.classList.add("hidden");
+      return;
+    }
+
+    trackerSection.classList.remove("hidden");
+    recentSection.classList.remove("hidden");
+
+    const currentLog = getCurrentLog();
+    const previousLog = findPreviousWorkoutLog(todayPlan.name, todayISO);
+
+    metaWorkout.textContent = todayPlan.name;
+    metaExercises.textContent = String(todayPlan.exercises.length);
+    workoutNote.value = currentLog.workoutNote || "";
+    exerciseList.innerHTML = "";
+
+    todayPlan.exercises.forEach((exercise, exerciseIndex) => {
+      const currentExerciseState = currentLog.exercises[exerciseIndex] || emptyExerciseState(exercise);
+      const previousExerciseState = previousLog?.exercises?.[exerciseIndex] || null;
+      const isUni = !!currentExerciseState.unilateral;
+
+      let toggleButton = "";
+      if (exercise.canBeUnilateral) {
+        toggleButton = `
+          <button class="toggle-btn ${isUni ? "active" : ""}" data-toggle="${exerciseIndex}">
+            ${isUni ? "Unilateral On" : "Unilateral Off"}
+          </button>
         `;
-        splitList.appendChild(item);
-      });
-    }
-
-    function renderWorkout() {
-      if (isRestDay) {
-        trackerSection.classList.add("hidden");
-        recentSection.classList.add("hidden");
-        return;
       }
 
-      trackerSection.classList.remove("hidden");
-      recentSection.classList.remove("hidden");
+      let setHtml = "";
 
-      const currentLog = getCurrentLog();
-      const previousLog = findPreviousWorkoutLog(todayPlan.name, todayISO);
+      for (let setIndex = 0; setIndex < exercise.sets; setIndex++) {
+        const currentSet = currentExerciseState.sets[setIndex] || (
+          isUni
+            ? { leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" }
+            : { weight: "", reps: "" }
+        );
 
-      metaWorkout.textContent = todayPlan.name;
-      metaExercises.textContent = String(todayPlan.exercises.length);
-      workoutNote.value = currentLog.workoutNote || "";
-      exerciseList.innerHTML = "";
+        const previousSet = previousExerciseState?.sets?.[setIndex] || null;
+        const lastLine = getSetLastLine(previousSet, isUni);
+        const recLine = buildRecommendation(exercise, previousSet, isUni);
 
-      todayPlan.exercises.forEach((exercise, exerciseIndex) => {
-        const currentExerciseState = currentLog.exercises[exerciseIndex] || emptyExerciseState(exercise);
-        const previousExerciseState = previousLog?.exercises?.[exerciseIndex] || null;
-        const isUni = !!currentExerciseState.unilateral;
-
-        let toggleButton = "";
-        if (exercise.canBeUnilateral) {
-          toggleButton = `
-            <button class="toggle-btn ${isUni ? "active" : ""}" data-toggle="${exerciseIndex}">
-              ${isUni ? "Unilateral On" : "Unilateral Off"}
-            </button>
+        if (isUni) {
+          setHtml += `
+            <div class="set-card">
+              <div class="set-top">
+                <div class="set-label">Set ${setIndex + 1}</div>
+              </div>
+              <div class="last-line">${escapeHtml(lastLine)}</div>
+              <div class="rec-line">${escapeHtml(recLine)}</div>
+              <div class="set-grid unilateral">
+                <div>
+                  <div class="sub-label">Left Weight</div>
+                  <input inputmode="decimal" data-left-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 52.5" value="${escapeHtml(currentSet.leftWeight || "")}">
+                </div>
+                <div>
+                  <div class="sub-label">Left Reps</div>
+                  <input inputmode="numeric" data-left-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.leftReps || "")}">
+                </div>
+                <div>
+                  <div class="sub-label">Right Weight</div>
+                  <input inputmode="decimal" data-right-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 52.5" value="${escapeHtml(currentSet.rightWeight || "")}">
+                </div>
+                <div>
+                  <div class="sub-label">Right Reps</div>
+                  <input inputmode="numeric" data-right-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.rightReps || "")}">
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          setHtml += `
+            <div class="set-card">
+              <div class="set-top">
+                <div class="set-label">Set ${setIndex + 1}</div>
+              </div>
+              <div class="last-line">${escapeHtml(lastLine)}</div>
+              <div class="rec-line">${escapeHtml(recLine)}</div>
+              <div class="set-grid">
+                <div>
+                  <div class="sub-label">Weight</div>
+                  <input inputmode="decimal" data-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 155 or +30" value="${escapeHtml(currentSet.weight || "")}">
+                </div>
+                <div>
+                  <div class="sub-label">Reps</div>
+                  <input inputmode="numeric" data-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.reps || "")}">
+                </div>
+              </div>
+            </div>
           `;
         }
+      }
 
-        let setHtml = "";
-        for (let setIndex = 0; setIndex < exercise.sets; setIndex++) {
-          const currentSet = currentExerciseState.sets[setIndex] || (isUni
-            ? { leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" }
-            : { weight: "", reps: "" });
-
-          const previousSet = previousExerciseState?.sets?.[setIndex] || null;
-          const lastLine = getSetLastLine(previousSet, isUni);
-          const recLine = buildRecommendation(exercise, previousSet, isUni);
-
-          if (isUni) {
-            setHtml += `
-              <div class="set-card">
-                <div class="set-top">
-                  <div class="set-label">Set ${setIndex + 1}</div>
-                </div>
-                <div class="last-line">${escapeHtml(lastLine)}</div>
-                <div class="rec-line">${escapeHtml(recLine)}</div>
-                <div class="set-grid unilateral">
-                  <div>
-                    <div class="sub-label">Left Weight</div>
-                    <input inputmode="decimal" data-left-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 52.5" value="${escapeHtml(currentSet.leftWeight || "")}">
-                  </div>
-                  <div>
-                    <div class="sub-label">Left Reps</div>
-                    <input inputmode="numeric" data-left-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.leftReps || "")}">
-                  </div>
-                  <div>
-                    <div class="sub-label">Right Weight</div>
-                    <input inputmode="decimal" data-right-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 52.5" value="${escapeHtml(currentSet.rightWeight || "")}">
-                  </div>
-                  <div>
-                    <div class="sub-label">Right Reps</div>
-                    <input inputmode="numeric" data-right-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.rightReps || "")}">
-                  </div>
-                </div>
-              </div>
-            `;
-          } else {
-            setHtml += `
-              <div class="set-card">
-                <div class="set-top">
-                  <div class="set-label">Set ${setIndex + 1}</div>
-                </div>
-                <div class="last-line">${escapeHtml(lastLine)}</div>
-                <div class="rec-line">${escapeHtml(recLine)}</div>
-                <div class="set-grid">
-                  <div>
-                    <div class="sub-label">Weight</div>
-                    <input inputmode="decimal" data-weight="${exerciseIndex}-${setIndex}" placeholder="ex: 155 or +30" value="${escapeHtml(currentSet.weight || "")}">
-                  </div>
-                  <div>
-                    <div class="sub-label">Reps</div>
-                    <input inputmode="numeric" data-reps="${exerciseIndex}-${setIndex}" placeholder="ex: 8" value="${escapeHtml(currentSet.reps || "")}">
-                  </div>
-                </div>
-              </div>
-            `;
-          }
-        }
-
-        const card = document.createElement("div");
-        card.className = "exercise-card";
-        card.dataset.card = exerciseIndex;
-        card.dataset.unilateral = String(isUni);
-        card.innerHTML = `
-          <div class="exercise-head">
-            <div>
-              <div class="exercise-name">${exercise.name}</div>
-              <div class="chips">
-                <div class="chip">${exercise.sets} set${exercise.sets > 1 ? "s" : ""}</div>
-                <div class="chip">${exercise.repMin}-${exercise.repMax} reps</div>
-              </div>
+      const card = document.createElement("div");
+      card.className = "exercise-card";
+      card.dataset.card = exerciseIndex;
+      card.dataset.unilateral = String(isUni);
+      card.innerHTML = `
+        <div class="exercise-head">
+          <div>
+            <div class="exercise-name">${exercise.name}</div>
+            <div class="chips">
+              <div class="chip">${exercise.sets} set${exercise.sets > 1 ? "s" : ""}</div>
+              <div class="chip">${exercise.repMin}-${exercise.repMax} reps</div>
             </div>
-            ${toggleButton}
           </div>
-          <div class="set-list">${setHtml}</div>
-          <textarea data-note="${exerciseIndex}" placeholder="Exercise notes...">${escapeHtml(currentExerciseState.note || "")}</textarea>
-        `;
+          ${toggleButton}
+        </div>
+        <div class="set-list">${setHtml}</div>
+        <textarea data-note="${exerciseIndex}" placeholder="Exercise notes...">${escapeHtml(currentExerciseState.note || "")}</textarea>
+      `;
 
-        exerciseList.appendChild(card);
+      exerciseList.appendChild(card);
+    });
+
+    updateProgress(false);
+  }
+
+  function updateProgress(shouldWriteDraft = true) {
+    if (isRestDay) return;
+
+    const state = collectFormState();
+    let totalSets = 0;
+    let completedSets = 0;
+
+    todayPlan.exercises.forEach((exercise, exerciseIndex) => {
+      totalSets += exercise.sets;
+      const exerciseState = state.exercises[exerciseIndex];
+
+      exerciseState.sets.forEach(set => {
+        if (exerciseState.unilateral) {
+          const leftDone = String(set.leftReps || "").trim() !== "";
+          const rightDone = String(set.rightReps || "").trim() !== "";
+          if (leftDone && rightDone) completedSets++;
+        } else {
+          if (String(set.reps || "").trim() !== "") completedSets++;
+        }
       });
+    });
 
-      updateProgress();
-    }
+    metaSets.textContent = `${completedSets} / ${totalSets}`;
+    const percent = totalSets ? Math.round((completedSets / totalSets) * 100) : 0;
+    progressFill.style.width = percent + "%";
+    progressLabel.textContent = `Progress • ${percent}% complete`;
 
-    function updateProgress() {
-      if (isRestDay) return;
-      const state = collectFormState();
-      let totalSets = 0;
-      let completedSets = 0;
-
-      todayPlan.exercises.forEach((exercise, exerciseIndex) => {
-        totalSets += exercise.sets;
-        const exerciseState = state.exercises[exerciseIndex];
-        exerciseState.sets.forEach(set => {
-          if (exerciseState.unilateral) {
-            const leftDone = String(set.leftReps || "").trim() !== "";
-            const rightDone = String(set.rightReps || "").trim() !== "";
-            if (leftDone && rightDone) completedSets++;
-          } else {
-            if (String(set.reps || "").trim() !== "") completedSets++;
-          }
-        });
-      });
-
-      metaSets.textContent = `${completedSets} / ${totalSets}`;
-      const percent = totalSets ? Math.round((completedSets / totalSets) * 100) : 0;
-      progressFill.style.width = percent + "%";
-      progressLabel.textContent = `Progress • ${percent}% complete`;
+    if (shouldWriteDraft) {
       writeCurrentDraft(state);
     }
+  }
 
-    function renderRecent() {
-      if (isRestDay) return;
-      const store = loadStore();
-      const entries = Object.entries(store)
-        .map(([key, value]) => {
-          const [date, workoutName] = key.split("|");
-          return { date, workoutName, value };
-        })
-        .filter(item => item.value?.updatedAt)
-        .sort((a, b) => new Date(b.value.updatedAt) - new Date(a.value.updatedAt))
-        .slice(0, 8);
+  function renderRecent() {
+    if (isRestDay) return;
 
-      recentList.innerHTML = "";
+    const store = loadStore();
+    const entries = Object.entries(store)
+      .map(([key, value]) => {
+        const [date, workoutName] = key.split("|");
+        return { date, workoutName, value };
+      })
+      .filter(item => item.value?.updatedAt)
+      .sort((a, b) => new Date(b.value.updatedAt) - new Date(a.value.updatedAt))
+      .slice(0, 8);
 
-      if (!entries.length) {
-        recentList.innerHTML = `
-          <div class="recent-item">
-            <div class="recent-name">No saved sessions yet.</div>
-            <div class="muted">Finish a workout and hit save — it’ll show up here.</div>
-          </div>
-        `;
-        return;
-      }
+    recentList.innerHTML = "";
 
-      entries.forEach(item => {
-        let total = 0;
-        let done = 0;
-        item.value.exercises.forEach(ex => {
-          total += ex.sets.length;
-          ex.sets.forEach(set => {
-            if (ex.unilateral) {
-              if (String(set.leftReps || "").trim() !== "" && String(set.rightReps || "").trim() !== "") done++;
-            } else {
-              if (String(set.reps || "").trim() !== "") done++;
-            }
-          });
+    if (!entries.length) {
+      recentList.innerHTML = `
+        <div class="recent-item">
+          <div class="recent-name">No saved sessions yet.</div>
+          <div class="muted">Finish a workout and hit save — it’ll show up here.</div>
+        </div>
+      `;
+      return;
+    }
+
+    entries.forEach(item => {
+      const plan = getPlanByName(item.workoutName);
+      const normalized = plan ? normalizeLog(plan, item.value, item.date) : item.value;
+
+      let total = 0;
+      let done = 0;
+
+      normalized.exercises.forEach(ex => {
+        total += ex.sets.length;
+        ex.sets.forEach(set => {
+          if (ex.unilateral) {
+            if (String(set.leftReps || "").trim() !== "" && String(set.rightReps || "").trim() !== "") done++;
+          } else {
+            if (String(set.reps || "").trim() !== "") done++;
+          }
         });
-
-        const div = document.createElement("div");
-        div.className = "recent-item";
-        div.innerHTML = `
-          <div class="recent-top">
-            <div>
-              <div class="recent-name">${item.workoutName}</div>
-              <div class="muted">${item.date}</div>
-            </div>
-            <div class="bubble">${done}/${total}</div>
-          </div>
-        `;
-        recentList.appendChild(div);
       });
-    }
 
-    function toggleUnilateral(exerciseIndex) {
-      const store = loadStore();
-      const log = getCurrentLog();
-      const exercise = todayPlan.exercises[exerciseIndex];
-      if (!exercise.canBeUnilateral) return;
+      const div = document.createElement("div");
+      div.className = "recent-item";
+      div.innerHTML = `
+        <div class="recent-top">
+          <div>
+            <div class="recent-name">${item.workoutName}</div>
+            <div class="muted">${item.date}</div>
+          </div>
+          <div class="bubble">${done}/${total}</div>
+        </div>
+      `;
+      recentList.appendChild(div);
+    });
+  }
 
-      const currentState = log.exercises[exerciseIndex];
-      const nextUni = !currentState.unilateral;
+  function toggleUnilateral(exerciseIndex) {
+    const store = loadStore();
+    const log = getCurrentLog();
+    const exercise = todayPlan.exercises[exerciseIndex];
 
-      currentState.unilateral = nextUni;
-      currentState.sets = [];
+    if (!exercise.canBeUnilateral) return;
 
-      for (let i = 0; i < exercise.sets; i++) {
-        if (nextUni) {
-          currentState.sets.push({ leftWeight: "", leftReps: "", rightWeight: "", rightReps: "" });
-        } else {
-          currentState.sets.push({ weight: "", reps: "" });
-        }
-      }
+    const currentState = log.exercises[exerciseIndex];
+    const nextUni = !currentState.unilateral;
+    const newSets = [];
 
-      store[currentKey()] = log;
-      saveStore(store);
-      renderWorkout();
-      saveStatus.textContent = "Changed unilateral mode.";
-    }
-
-    function init() {
-      renderHero();
-      renderSplit();
-
-      if (!isRestDay) {
-        renderWorkout();
-        renderRecent();
-
-        exerciseList.addEventListener("input", () => {
-          updateProgress();
-          saveStatus.textContent = "Draft updated.";
+    currentState.sets.forEach(prevSet => {
+      if (nextUni) {
+        const weight = prevSet.weight || prevSet.leftWeight || prevSet.rightWeight || "";
+        const reps = prevSet.reps || prevSet.leftReps || prevSet.rightReps || "";
+        newSets.push({
+          leftWeight: weight,
+          leftReps: reps,
+          rightWeight: weight,
+          rightReps: reps
         });
-
-        exerciseList.addEventListener("click", (e) => {
-          const btn = e.target.closest("[data-toggle]");
-          if (!btn) return;
-          toggleUnilateral(Number(btn.dataset.toggle));
-        });
-
-        workoutNote.addEventListener("input", () => {
-          updateProgress();
-          saveStatus.textContent = "Draft updated.";
-        });
-
-        saveBtn.addEventListener("click", () => saveCurrentLog(true));
-        clearBtn.addEventListener("click", () => {
-          if (confirm("Clear today’s workout log?")) clearCurrentLog();
+      } else {
+        const weight = prevSet.weight || prevSet.leftWeight || prevSet.rightWeight || "";
+        const reps = prevSet.reps || prevSet.leftReps || prevSet.rightReps || "";
+        newSets.push({
+          weight,
+          reps
         });
       }
+    });
+
+    currentState.unilateral = nextUni;
+    currentState.sets = newSets;
+
+    store[currentKey()] = normalizeLog(todayPlan, log, todayISO);
+    saveStore(store);
+    renderWorkout();
+    saveStatus.textContent = "Changed unilateral mode.";
+  }
+
+  function init() {
+    renderHero();
+    renderSplit();
+
+    if (isRestDay) {
+      trackerSection.classList.add("hidden");
+      recentSection.classList.add("hidden");
+      return;
     }
 
-    init();
-  </script>
+    trackerSection.classList.remove("hidden");
+    recentSection.classList.remove("hidden");
+
+    renderWorkout();
+    renderRecent();
+
+    exerciseList.addEventListener("input", () => {
+      updateProgress();
+      saveStatus.textContent = "Draft updated.";
+    });
+
+    exerciseList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-toggle]");
+      if (!btn) return;
+      toggleUnilateral(Number(btn.dataset.toggle));
+    });
+
+    workoutNote.addEventListener("input", () => {
+      updateProgress();
+      saveStatus.textContent = "Draft updated.";
+    });
+
+    saveBtn.addEventListener("click", () => saveCurrentLog(true));
+    clearBtn.addEventListener("click", () => {
+      if (confirm("Clear today’s workout log?")) clearCurrentLog();
+    });
+  }
+
+  init();
+
+  const nextMidnight = new Date();
+  nextMidnight.setHours(24, 0, 0, 0);
+  setTimeout(() => location.reload(), nextMidnight - new Date());
+</script>
 </body>
 </html>
